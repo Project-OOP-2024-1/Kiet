@@ -73,24 +73,16 @@ public class SLime extends Entity {
         collisionOn = false;
         gp.colis.checkTile(this);
         gp.colis.checkPlayer(this);
-        //
-        if (gp.colis.Damagedfromfireball(gp.player.projectile,this)){
-            invincible=true;
-            collisionOn=true;
-            gp.player.projectile.alive=false;
-            System.out.println("Boom!");
-        }
+        gp.colis.checkObject(this,gp.object);
         //take damage from player
         if (gp.colis.Damaged(this) && gp.player.attack){
-            if (!damaged){
+            if (!damaged && !invincible){
                 if(life>0) life--;
                 invincible=true;
-                System.out.println("ouch");
                 damaged=true;
             }
         }
         if (!gp.player.attack) damaged=false;
-        //
         if (!collisionOn) {
             switch (direction) {
                 case "up":
@@ -116,7 +108,7 @@ public class SLime extends Entity {
         }
     }
     public void draw(Graphics2D g2) {
-        BufferedImage image = null;
+        image = null;
         int screenX = x - gp.player.x + gp.player.screenX;
         int screenY = y - gp.player.y + gp.player.screenY;
         if (x + gp.tileSize > gp.player.x - gp.player.screenX &&
@@ -141,7 +133,7 @@ public class SLime extends Entity {
                     break;
             }
             if (invincible){
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3f));
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
             }
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
             //reset;

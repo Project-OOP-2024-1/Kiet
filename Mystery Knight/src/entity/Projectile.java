@@ -31,6 +31,8 @@ public class Projectile extends Entity{
     public void update() {
         collisionOn=false;
         gp.colis.checkTile(this);
+        gp.colis.checkEntity(this, gp.monster);
+        gp.colis.checkObject(this,gp.object);
         if (!collisionOn) {
             if (direction.equals("up")) y -= speed;
             if (direction.equals("down") || direction.equals(("idle"))) y += speed;

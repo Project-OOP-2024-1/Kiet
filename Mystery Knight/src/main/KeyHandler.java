@@ -97,6 +97,14 @@ public class KeyHandler implements KeyListener {
                 Key_Set.put(code,true);
             }
         }
+        if (isPressed(80)){
+            if (gp.gameState==gp.playState){
+                gp.gameState=gp.pauseState;
+            }
+            else if (gp.gameState==gp.pauseState){
+                gp.gameState=gp.playState;
+            }
+        }
     }
 
     @Override

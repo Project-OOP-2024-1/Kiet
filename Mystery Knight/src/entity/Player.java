@@ -93,6 +93,7 @@ public class Player extends Entity {
         if (keyH.isPressed(76) && !attack) attack=true;
         collisionOn=false;
         gp.colis.checkTile(this);
+        gp.colis.checkObject(this,gp.object);
         gp.colis.checkEntity(this, gp.monster);
         gp.colis.checkEntity(this,gp.npc);
         if (!collisionOn && !attack){

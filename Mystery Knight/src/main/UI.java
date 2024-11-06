@@ -12,9 +12,9 @@ public class UI {
     Font maruMonica, purisaB;
     public boolean messageOn = false;
     public String message = "";
-//    int messageCounter = 0;
-//    public boolean gameFinished = false;
-//    public String currentDialogue = ""; // this is for dialog
+    int messageCounter = 0;
+    public boolean gameFinished = false;
+    public String currentDialogue = ""; // this is for dialog
     public int commandNum = 0;
     public int titleScreenState = 0; //0: the first screen, 1: the second screen,...
 
@@ -57,9 +57,9 @@ public class UI {
             drawPauseScreen();
         }
         // DIALOGUE STATE
-//        if(gp.gameState == gp.dialogueState){
-//            drawDialogueScreen();
-//        }
+        if(gp.gameState == gp.dialogueState){
+            drawDialogueScreen();
+        }
     }
 
     public void drawTitleScreen() {
@@ -164,6 +164,26 @@ public class UI {
         g2.drawString(text,x,y);
     }
 
+    public void drawDialogueScreen() {
+
+        //	WINDOW
+        int x = gp.tileSize*2;
+        int y = gp.tileSize/2;
+        int width = gp.screenWidth - (gp.tileSize*4);
+        int height = gp.tileSize*3;
+
+        drawSubWindow(x,y,width,height);
+
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN,28F));
+        x += gp.tileSize;
+        y += gp.tileSize;
+
+        for(String line : currentDialogue.split("\n")) {
+            g2.drawString(line, x, y);
+            y += 40;
+        }
+
+    }
     //some useful method
     public void drawSubWindow(int x, int y, int width, int height) {
         Color c = new Color(0, 0, 0, 210);

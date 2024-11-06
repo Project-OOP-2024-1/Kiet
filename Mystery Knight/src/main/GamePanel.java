@@ -43,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Player player = new Player(this, keyH);
     //Object
     public Entity monster[]= new Entity[20];
+    public Entity object[]= new  Entity[20];
     OBJ_heart player_heart = new OBJ_heart(this);
     public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entity_list= new ArrayList<>();
@@ -51,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
     public  final int titleState = 0;
     public final int playState = 1;
     public final int pauseState =2;
+    public final int dialogueState=3;
     //part of Game setting
     Asset_Setter Setter = new Asset_Setter(this);
     public Collision_checker colis =new Collision_checker(this);
@@ -81,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void Game_setup(){
         Setter.setNPC();
         Setter.setMonster();
+        Setter.setObject();
         gameState= titleState;
     }
     @Override
@@ -121,7 +124,6 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
-
         if (gameState==playState) {
             player.update();
             player_heart.update(player);
@@ -132,13 +134,18 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
             //Monster
+            int i =0;
             for (Entity e : monster){
                 if (e!=null && e.life!=0){
                     e.update();
                 }
+                if (e!=null && e.life==0) {
+                    monster[i]=null;
+                }
+                i++;
             }
             //Skill
-            for(int i=0;i<projectileList.size();i++){
+            for(i=0;i<projectileList.size();i++){
                 if(projectileList.get(i)!=null){
                     if(projectileList.get(i).alive){
                         projectileList.get(i).update();
@@ -148,22 +155,7 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
-            //pause state
-            if (keyH.isPressed(80)){
-                if (gameState==playState){
-                    gameState=pauseState;
-                }
-                if (gameState==pauseState){
-                    gameState=playState;
-                }
-            }
-
         }
-
-
-
-
-
     }
     //Output for every updating
     public void paintComponent(Graphics g) {
@@ -188,11 +180,18 @@ public class GamePanel extends JPanel implements Runnable {
                     entity_list.add(e);
                 }
             }
-            //Monster
-            for (Entity e : monster){
-                if (e!=null && e.life!=0){
+            //Object
+            for (Entity e : object){
+                if (e!=null){
                     entity_list.add(e);
                 }
+            }
+            //Monster
+            for (Entity e : monster){
+                if (e!=null && e.life!=0) {
+                    entity_list.add(e);
+                }
+
             }
             //Skill
             for (int i = 0; i < projectileList.size(); i++) {
