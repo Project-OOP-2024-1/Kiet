@@ -15,6 +15,7 @@ public class Projectile extends Entity{
     public Projectile(GamePanel gp){
         super(gp);
         this.gp = gp;
+        collisionOn=false;
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
     }
@@ -28,11 +29,18 @@ public class Projectile extends Entity{
     }
     @Override
     public void update() {
-        if (direction.equals("up")) y -= speed;
-        if (direction.equals("down") || direction.equals(("idle"))) y += speed;
-        if (direction.equals("left")) x -= speed;
-        if (direction.equals("right")) x += speed;
-        life--;
+        collisionOn=false;
+        gp.colis.checkTile(this);
+        if (!collisionOn) {
+            if (direction.equals("up")) y -= speed;
+            if (direction.equals("down") || direction.equals(("idle"))) y += speed;
+            if (direction.equals("left")) x -= speed;
+            if (direction.equals("right")) x += speed;
+            life--;
+        }
+        else {
+            life=0;
+        }
         if (life <= 0) alive = false;
         Countersprite++;
         if (Countersprite > 15) {

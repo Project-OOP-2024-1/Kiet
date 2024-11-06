@@ -21,6 +21,7 @@ public class OBJ_Fireball extends Projectile {
         damage = 2;
         useCost = 1;
         alive = false;
+        solidregion = new Rectangle(0,0,24,24);
         getImage();
     }
 

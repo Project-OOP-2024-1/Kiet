@@ -20,6 +20,7 @@ public class SLime extends Entity {
         life=maxLife;
         solidregion= new Rectangle(8,16,32,24);
         getImage();
+        damaged=false;
     }
     public void getImage(){
         SpriteSheet sheet = new SpriteSheet("/SLIME/silme_animation_w_trans.png", gp.originalTileSize, gp.originalTileSize, 8, 4);
@@ -72,6 +73,24 @@ public class SLime extends Entity {
         collisionOn = false;
         gp.colis.checkTile(this);
         gp.colis.checkPlayer(this);
+        //
+        if (gp.colis.Damagedfromfireball(gp.player.projectile,this)){
+            invincible=true;
+            collisionOn=true;
+            gp.player.projectile.alive=false;
+            System.out.println("Boom!");
+        }
+        //take damage from player
+        if (gp.colis.Damaged(this) && gp.player.attack){
+            if (!damaged){
+                if(life>0) life--;
+                invincible=true;
+                System.out.println("ouch");
+                damaged=true;
+            }
+        }
+        if (!gp.player.attack) damaged=false;
+        //
         if (!collisionOn) {
             switch (direction) {
                 case "up":
@@ -86,6 +105,13 @@ public class SLime extends Entity {
                 case "left":
                     x -= speed;
                     break;
+            }
+        }
+        if (invincible){
+            invincilbleCounter++;
+            if (invincilbleCounter>60) {
+                invincible = false;
+                invincilbleCounter=0;
             }
         }
     }
@@ -114,7 +140,12 @@ public class SLime extends Entity {
                     image = idleSprites[Numsprite - 1];
                     break;
             }
+            if (invincible){
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.3f));
+            }
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+            //reset;
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
         }
     }
 }

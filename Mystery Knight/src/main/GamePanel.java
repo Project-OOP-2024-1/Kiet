@@ -133,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
             //Monster
             for (Entity e : monster){
-                if (e!=null){
+                if (e!=null && e.life!=0){
                     e.update();
                 }
             }
@@ -148,6 +148,16 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+            //pause state
+            if (keyH.isPressed(80)){
+                if (gameState==playState){
+                    gameState=pauseState;
+                }
+                if (gameState==pauseState){
+                    gameState=playState;
+                }
+            }
+
         }
 
 
@@ -168,6 +178,8 @@ public class GamePanel extends JPanel implements Runnable {
         else {
             // Map
             tileM.draw(g2);
+            //player heart
+            player_heart.draw(g2);
             //player
             entity_list.add(player);
             //NPC
@@ -178,7 +190,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
             //Monster
             for (Entity e : monster){
-                if (e!=null){
+                if (e!=null && e.life!=0){
                     entity_list.add(e);
                 }
             }

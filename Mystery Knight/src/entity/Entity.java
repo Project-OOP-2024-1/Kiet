@@ -12,16 +12,22 @@ public class Entity {
     public BufferedImage image;
     public BufferedImage[] rightSprites,leftSprites, upSprites, downSprites, idleSprites ;
     public BufferedImage[] rightAttack, leftAttack, upAttack, downAttack;
-    public String direction="down";
+    public Projectile projectile;
     public int Countersprite = 0;
     public int Numsprite = 1;
     public int Attacksprite = 0;
     public int NumAttack = 0;
+    public int invincilbleCounter=0;
+
     //Control
     public int CounterNPC= 0;
     public Rectangle solidregion;
-    public boolean collisionOn = false;
-
+    public Rectangle Attackregion;
+    public boolean collisionOn = false;//for monster and player , vv
+    public boolean collision;
+    public boolean invincible = false;
+    public boolean attack;//attack check
+    public boolean damaged;//check for monster damaged
     public Entity(GamePanel gp){
         this.gp = gp;
     }
@@ -30,11 +36,9 @@ public class Entity {
     public int x, y;
     public int speed;
     public int life;
-    public Projectile projectile;
-    public boolean attack;
+    public String direction="down";
     //Item status
     public String name;
-    public int manaCost;
     public int damage;
     public boolean alive;
     //Set Action for NPC or Monster(Optimal)

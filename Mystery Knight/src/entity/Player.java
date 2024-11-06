@@ -12,19 +12,16 @@ import object.OBJ_heart;
 import sprite.SpriteSheet;
 
 public class Player extends Entity {
-
+    //status from entity so don't show in here
+    //
     GamePanel gp;
     KeyHandler keyH;
     // Control
     int frameCount = 4;
     public final int screenX;
     public final int screenY;
-    //player status
-    public int damage;
-    public int maxMana;
-    public int mana;
-    public boolean alive;
     //skill
+
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.gp = gp;
@@ -36,7 +33,7 @@ public class Player extends Entity {
         setDefaultValue();
         projectile=new OBJ_Fireball(gp);
         solidregion = new Rectangle(8,0,32,32);
-
+        Attackregion= new Rectangle(0,0,36,36);
     }
 
     public void setDefaultValue() {

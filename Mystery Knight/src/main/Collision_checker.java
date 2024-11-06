@@ -51,6 +51,7 @@ public class Collision_checker {
 
 
     }
+    // for player
     public void checkEntity(Entity entity, Entity[] target){
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
@@ -74,6 +75,7 @@ public class Collision_checker {
                 }
                 if(entity.solidregion.intersects(t.solidregion)) {
                     entity.collisionOn=true;
+                    t.collisionOn=true;
                 }
                 // return origin
                 entity.solidregion.x=default_e_x;
@@ -83,6 +85,7 @@ public class Collision_checker {
             }
         }
     }
+    // for monster
     public void checkPlayer(Entity entity){
         Entity t =gp.player;
         int default_e_x=entity.solidregion.x;
@@ -110,4 +113,72 @@ public class Collision_checker {
         t.solidregion.x=default_t_x;
         t.solidregion.y=default_t_y;
     }
+    // for monster
+    public boolean Damaged(Entity entity){
+        Entity t =gp.player;
+        boolean result=false;
+        int default_e_x=entity.solidregion.x;
+        int default_e_y=entity.solidregion.y;
+        int default_t_x=t.Attackregion.x;
+        int default_t_y=t.Attackregion.y;
+        int now_x= t.x;
+        int now_y=t.y;
+        entity.solidregion.x= entity.x+entity.solidregion.x;
+        entity.solidregion.y=entity.y +entity.solidregion.y;
+        //
+        switch (t.direction){
+            case "up": now_y-=t.Attackregion.height;break;
+            case "down": now_y+=t.Attackregion.height;break;
+            case "right": now_x+=t.Attackregion.width;break;
+            case "left": now_x-=t.Attackregion.width;break;
+        }
+        t.Attackregion.x=now_x+t.Attackregion.x;
+        t.Attackregion.y=now_y+t.Attackregion.y;
+        switch (entity.direction){
+            case "up": entity.solidregion.y-=entity.speed;break;
+            case "down": entity.solidregion.y+=entity.speed;break;
+            case "right": entity.solidregion.x+=entity.speed;break;
+            case "left": entity.solidregion.x-=entity.speed;break;
+        }
+        if(entity.solidregion.intersects(t.Attackregion)) {
+            result = true;
+        }
+        // return origin
+        entity.solidregion.x=default_e_x;
+        entity.solidregion.y=default_e_y;
+        t.Attackregion.x=default_t_x;
+        t.Attackregion.y=default_t_y;
+        return result;
+    }
+    //for project tiles
+    public boolean Damagedfromfireball(Entity t,Entity entity){
+        boolean result= false;
+        int default_e_x=entity.solidregion.x;
+        int default_e_y=entity.solidregion.y;
+        int default_t_x=t.solidregion.x;
+        int default_t_y=t.solidregion.y;
+        entity.solidregion.x= entity.x+entity.solidregion.x;
+        entity.solidregion.y=entity.y +entity.solidregion.y;
+        //
+        t.solidregion.x=t.x+t.solidregion.x;
+        t.solidregion.y=t.y+t.solidregion.y;
+
+        switch (entity.direction){
+            case "up": entity.solidregion.y-=entity.speed;break;
+            case "down": entity.solidregion.y+=entity.speed;break;
+            case "right": entity.solidregion.x+=entity.speed;break;
+            case "left": entity.solidregion.x-=entity.speed;break;
+        }
+        if(entity.solidregion.intersects(t.solidregion)) {
+            result=true;
+            t.collisionOn=true;
+        }
+        // return origin
+        entity.solidregion.x=default_e_x;
+        entity.solidregion.y=default_e_y;
+        t.solidregion.x=default_t_x;
+        t.solidregion.y=default_t_y;
+        return result;
+    }
+
 }
