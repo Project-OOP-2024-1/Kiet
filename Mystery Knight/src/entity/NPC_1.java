@@ -11,6 +11,7 @@ public class NPC_1 extends Entity {
     int frameCount=4;
     public NPC_1(GamePanel gp) {
         super(gp);
+        name="village";
         direction = "idle";
         speed = 1;
         getImage();

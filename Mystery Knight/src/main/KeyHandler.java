@@ -20,7 +20,7 @@ public class KeyHandler implements KeyListener {
         Key_Set.put(KeyEvent.VK_P,false);//"pause"
         Key_Set.put(KeyEvent.VK_K,false);//"shot"
         Key_Set.put(KeyEvent.VK_L,false);//"attack"
-        Key_Set.put(KeyEvent.VK_ENTER,false);
+        Key_Set.put(KeyEvent.VK_ENTER,false);//for dialog and tilte screen
     }
     @Override
     public void keyTyped(KeyEvent e) {
@@ -105,6 +105,11 @@ public class KeyHandler implements KeyListener {
                 gp.gameState=gp.playState;
             }
         }
+        if (isPressed(10) && gp.ui.messageOn){
+            gp.gameState=gp.dialogueState;
+            gp.ui.messageCounter++;
+        }
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package object;
 import main.GamePanel;
 
 import entity.Entity;
+import main.UtilityTool;
 import sprite.SpriteSheet;
 
 import java.awt.*;

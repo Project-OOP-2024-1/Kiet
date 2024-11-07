@@ -56,8 +56,19 @@ public class UI {
         if (gp.gameState == gp.pauseState) {
             drawPauseScreen();
         }
-        // DIALOGUE STATE
+        // DIALOGUE STATE (More advanced)
         if(gp.gameState == gp.dialogueState){
+            switch (messageCounter){
+                case 1: currentDialogue="Hello Knight";break;
+                case 2: currentDialogue="How are you";break;
+                case 3: currentDialogue="Do you something here?";break;
+                case 4: currentDialogue="May I help you?";break;
+                case 5:
+                    gp.gameState=gp.playState;
+                    messageCounter=0;
+                    messageOn=false;
+                    break;
+            }
             drawDialogueScreen();
         }
     }

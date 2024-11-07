@@ -113,6 +113,9 @@ public class Collision_checker {
         }
         if(entity.solidregion.intersects(t.solidregion)) {
             entity.collisionOn=true;
+            if (entity.name.equals("village")){
+                gp.ui.messageOn=true;
+            }
         }
         // return origin
         entity.solidregion.x=default_e_x;
