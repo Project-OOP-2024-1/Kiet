@@ -10,13 +10,15 @@ public class Entity {
     GamePanel gp;
     //Sprite
     public BufferedImage image;
-    public BufferedImage[] rightSprites,leftSprites, upSprites, downSprites, idleSprites ;
+    public BufferedImage[] rightSprites,leftSprites, upSprites, downSprites, idleSprites, deathSprites;
     public BufferedImage[] rightAttack, leftAttack, upAttack, downAttack;
     public Projectile projectile;
     public int Countersprite = 0;
     public int Numsprite = 1;
     public int Attacksprite = 0;
     public int NumAttack = 0;
+    public int Counterdeath= 0;
+    public int NumDeath = 0;
     public int invincilbleCounter=0;
 
     //Control
@@ -28,6 +30,7 @@ public class Entity {
     public boolean invincible = false;
     public boolean attack;//attack check
     public boolean damaged;//check for monster damaged
+    public boolean death;//death animation
     public Entity(GamePanel gp){
         this.gp = gp;
     }
@@ -42,13 +45,27 @@ public class Entity {
     public int damage;
     public boolean alive;
     //Set Action for NPC or Monster(Optimal)
-    public void setAction(){};
+    public void setAction(){}
     //get Information about image
-    public void getImage(){};
+    public void getImage(){}
     //create Sprite in every situation
-    public void draw(Graphics2D g2){};
+    public void draw(Graphics2D g2){}
     //update Sprite in FPS;
-    public void update(){};
+    public void update(){}
+    //death_sprite
+    public void update_death(){
+        Counterdeath++;
+        if (Counterdeath>20){
+            if (NumDeath>2){
+                death=true;
+                NumDeath=0;
+            }
+            NumDeath++;
+            Counterdeath=0;
+        }
+    }
+    //
+    public void draw_death(Graphics2D g2){}
 
 
 

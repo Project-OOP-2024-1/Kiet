@@ -28,6 +28,7 @@ public class OBJ_heart extends Entity {
         catch (IOException e){
             e.printStackTrace();
         }
+        image=temp_image[0];
     }
     public void update(Player player){
         int [][] status = {

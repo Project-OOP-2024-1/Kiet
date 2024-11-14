@@ -3,11 +3,13 @@ package main;
 import javax.swing.JFrame;
 
 public class Main {
+    public static JFrame window;
     public static void main(String[] args) {
-        JFrame window = new JFrame();
+        window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setTitle("2D game");
+//        window.setUndecorated(true); for full screen
 
         GamePanel gamePanel;
         gamePanel = new GamePanel();

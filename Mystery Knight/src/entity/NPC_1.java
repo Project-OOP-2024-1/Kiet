@@ -22,7 +22,7 @@ public class NPC_1 extends Entity {
 
     public void getImage() {
 
-        SpriteSheet sheet = new SpriteSheet("/SLIME/shit_w_trans.png", gp.originalTileSize, gp.originalTileSize, 8, 4);
+        SpriteSheet sheet = new SpriteSheet("/SLIME/shit_w_trans.png", gp.originalTileSize, gp.originalTileSize);
 
         rightSprites = new BufferedImage[frameCount];
         leftSprites = new BufferedImage[frameCount];

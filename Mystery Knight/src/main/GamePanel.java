@@ -1,12 +1,8 @@
 package main;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import javax.swing.JPanel;
 
@@ -29,8 +25,11 @@ public class GamePanel extends JPanel implements Runnable {
     //WORLD SETTINGS
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
-    public final int worldHeight = tileSize * maxWorldRow;
+    //Full Screen
+    int screenWidth2  = screenWidth;
+    int screenHeight2 = screenHeight;
+    BufferedImage tempScreen;
+    Graphics2D g2;
 
 
     int FPS = 60;// Frame per second
@@ -42,8 +41,8 @@ public class GamePanel extends JPanel implements Runnable {
     //Player
     public Player player = new Player(this, keyH);
     //Object
-    public Entity monster[]= new Entity[20];
-    public Entity object[]= new  Entity[20];
+    public Entity[] monster = new Entity[20];
+    public Entity[] object = new  Entity[20];
     OBJ_heart player_heart = new OBJ_heart(this);
     public ArrayList<Entity> projectileList = new ArrayList<>();
     ArrayList<Entity> entity_list= new ArrayList<>();
@@ -74,7 +73,15 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);// Recognizes pressed keys
         this.setFocusable(true);// This is required for the panel to receive keyboard events
     }
-
+    public void setFullScreen(){
+        // Get local screen device
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        gd.setFullScreenWindow(Main.window);
+        // Get full screen width and height
+        screenWidth2= Main.window.getWidth();
+        screenHeight2= Main.window.getHeight();
+    }
     public void startGameThread() {
         // Instantiate a thread
         gameThread = new Thread(this);
@@ -85,41 +92,39 @@ public class GamePanel extends JPanel implements Runnable {
         Setter.setMonster();
         Setter.setObject();
         gameState= titleState;
+        //
+        tempScreen = new BufferedImage(screenWidth,screenHeight,BufferedImage.TYPE_INT_ARGB);
+        g2 = (Graphics2D) tempScreen.getGraphics();
+//        setFullScreen();
     }
     @Override
     public void run() {
 
-        double drawInterval = 1000000000/FPS;// time interval between Frames
-        double nextDrawTime = System.nanoTime() + drawInterval;// time for draw the next frame
-
+        double drawInterval = (double) 1000000000 /FPS;// time interval between Frames
+        double delta=0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        long timer = 0;
+        int drawCount=0;
         // Game loop
         while(gameThread != null) {
 
-            long currentTime = System.nanoTime();
-
+            currentTime = System.nanoTime();
+            timer += (currentTime-lastTime);
+            delta+= (currentTime-lastTime)/ drawInterval;
+            lastTime=currentTime;
             // 1. Update
-            update();
-
-            // 2. Draw: Draw the updated information
-            repaint();
-
-            //
-            try {
-                double remainingTime = nextDrawTime - System.nanoTime();//used to calculate the remaining time (in nanoseconds) before the next frame needs to be drawn in the game loop.
-                remainingTime = remainingTime/1000000;//millisecond
-
-                if (remainingTime < 0) {
-                    remainingTime = 0;
-                }
-
-                Thread.sleep((long) remainingTime);// stop current thread
-
-                nextDrawTime += drawInterval;// update time for the next frame drawing
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (delta>=1){
+                update();
+                drawToTempComponent();
+                drawToScreen();
+                delta--;
+                drawCount++;
             }
-
+            if (timer >= 1000000000){
+                drawCount=0;
+                timer= 0;
+            }
         }
     }
 
@@ -139,7 +144,10 @@ public class GamePanel extends JPanel implements Runnable {
                 if (e!=null && e.life!=0){
                     e.update();
                 }
-                if (e!=null && e.life==0) {
+                if (e!=null && !e.alive) {
+                    e.update_death();
+                }
+                if (e!=null && e.death){
                     monster[i]=null;
                 }
                 i++;
@@ -157,17 +165,13 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
+
     //Output for every updating
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        // Change from Graphics class to Graphics2D
-        Graphics2D g2 = (Graphics2D)g;
-        if (gameState==titleState){
+    public void drawToTempComponent() {
+        if (gameState == titleState) {
             //for output screen
             ui.draw(g2);
-        }
-        else {
+        } else {
             // Map
             tileM.draw(g2);
             //player heart
@@ -175,55 +179,46 @@ public class GamePanel extends JPanel implements Runnable {
             //player
             entity_list.add(player);
             //NPC
-            for (Entity e : npc){
-                if (e!=null){
+            for (Entity e : npc) {
+                if (e != null) {
                     entity_list.add(e);
                 }
             }
             //Object
-            for (Entity e : object){
-                if (e!=null){
+            for (Entity e : object) {
+                if (e != null) {
                     entity_list.add(e);
                 }
             }
             //Monster
-            for (Entity e : monster){
-                if (e!=null && e.life!=0) {
+            for (Entity e : monster) {
+                if (e != null && !e.death) {
                     entity_list.add(e);
                 }
 
             }
             //Skill
-            for (int i = 0; i < projectileList.size(); i++) {
-                if (projectileList.get(i) != null) {
-                    entity_list.add(projectileList.get(i));
+            for (Entity entity : projectileList) {
+                if (entity != null) {
+                    entity_list.add(entity);
                 }
             }
             //Sorting
-            Collections.sort(entity_list, new Comparator<Entity>() {
-                @Override
-                public int compare(Entity o1, Entity o2) {
-                    int result = Integer.compare(o1.y,o2.y);
-                    return result;
-                }
-
-
-            });
+            entity_list.sort((o1, o2) -> Integer.compare(o1.y, o2.y));
             //Draw Entity
-            for (int i=0; i<entity_list.size();i++){
-                entity_list.get(i).draw(g2);
+            for (Entity entity : entity_list) {
+                entity.draw(g2);
             }
             //Entity
             entity_list.clear();
 
             //Pause state
             ui.draw(g2);
-            }
-
-
-
-
-        // Save some memory
-        g2.dispose();
+        }
+    }
+    public void drawToScreen(){
+        Graphics g = getGraphics();
+        g.drawImage(tempScreen,0,0,screenWidth2,screenHeight2,null);
+        g.dispose();
     }
 }

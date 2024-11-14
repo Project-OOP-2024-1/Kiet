@@ -8,8 +8,8 @@ import main.GamePanel;
 import main.KeyHandler;
 
 import object.OBJ_Fireball;
-import object.OBJ_heart;
 import sprite.SpriteSheet;
+
 
 public class Player extends Entity {
     //status from entity so don't show in here
@@ -47,11 +47,10 @@ public class Player extends Entity {
         attack=false;
         //
     }
-
     // Load sprite sheet and extract the player's walking animation sprites
     public void getImage() {
 
-        SpriteSheet sheet = new SpriteSheet("/player/walk.png", gp.originalTileSize, gp.originalTileSize, 8, 4);
+        SpriteSheet sheet = new SpriteSheet("/player/walk.png", gp.originalTileSize, gp.originalTileSize);
 
         rightSprites = new BufferedImage[frameCount];
         leftSprites = new BufferedImage[frameCount];
@@ -67,7 +66,7 @@ public class Player extends Entity {
             idleSprites[i] = sheet.getSprite(i, 4);
             }
         //Attack left right
-        SpriteSheet sheet1 = new SpriteSheet("/player/walk.png", gp.originalTileSize*2, gp.originalTileSize, 8, 4);
+        SpriteSheet sheet1 = new SpriteSheet("/player/walk.png", gp.originalTileSize*2, gp.originalTileSize);
         rightAttack= new BufferedImage[frameCount];
         leftAttack= new BufferedImage[frameCount];
         upAttack= new BufferedImage[frameCount];
@@ -78,7 +77,7 @@ public class Player extends Entity {
             leftAttack[i] = sheet1.getSprite(i, 11);
         }
         //up and down
-        SpriteSheet sheet2 = new SpriteSheet("/player/walk.png", gp.originalTileSize, gp.originalTileSize*2, 8, 4);
+        SpriteSheet sheet2 = new SpriteSheet("/player/walk.png", gp.originalTileSize, gp.originalTileSize*2);
         for (int i = 0; i < frameCount; i++) {
             downAttack[i] = sheet2.getSprite(i, 3); // Extract the sprites
             upAttack[i] = sheet2.getSprite(i, 4);

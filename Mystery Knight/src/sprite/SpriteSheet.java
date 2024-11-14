@@ -1,5 +1,7 @@
 package sprite;
 
+import utility.UtilityTool;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -14,14 +16,11 @@ public class SpriteSheet {
     private BufferedImage spriteSheet;
     private int spriteWidth;
     private int spriteHeight;
-    private int rows;
-    private int columns;
 
-    public SpriteSheet(String filePath, int spriteWidth, int spriteHeight, int rows, int columns) {
+    public SpriteSheet(String filePath, int spriteWidth, int spriteHeight) {
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
-        this.rows = rows;
-        this.columns = columns;
+
 
         try {
             // Load the sprite sheet image
@@ -33,8 +32,13 @@ public class SpriteSheet {
 
     // Extract sprites
     public BufferedImage getSprite(int col, int row) {
+        UtilityTool utilityTool = new UtilityTool();
         BufferedImage tmp = spriteSheet.getSubimage(col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight);
-
+        tmp = utilityTool.scaleImage(tmp,spriteWidth,spriteHeight);
+        return tmp;
+    }
+    public BufferedImage getSpriteforFire(int col, int row) {
+        BufferedImage tmp = spriteSheet.getSubimage(col * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight);
         return tmp;
     }
 }

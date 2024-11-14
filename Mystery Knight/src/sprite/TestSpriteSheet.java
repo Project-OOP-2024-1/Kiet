@@ -11,7 +11,7 @@ public class TestSpriteSheet {
         int rows = 8;
         int columns = 4;
 
-        SpriteSheet sheet = new SpriteSheet(filePath, spriteWidth, spriteHeight, rows, columns);
+        SpriteSheet sheet = new SpriteSheet(filePath, spriteWidth, spriteHeight);
         System.out.println("Sprite Sheet loaded successfully!");
     }
 }

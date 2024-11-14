@@ -20,16 +20,19 @@ public class SLime extends Entity {
         life=maxLife;
         solidregion= new Rectangle(8,16,32,24);
         getImage();
+        alive=true;
         damaged=false;
+        death=false;
     }
     public void getImage(){
-        SpriteSheet sheet = new SpriteSheet("/SLIME/silme_animation_w_trans.png", gp.originalTileSize, gp.originalTileSize, 8, 4);
+        SpriteSheet sheet = new SpriteSheet("/SLIME/silme_animation_w_trans.png", gp.originalTileSize, gp.originalTileSize);
 
         rightSprites = new BufferedImage[frameCount];
         leftSprites = new BufferedImage[frameCount];
         upSprites = new BufferedImage[frameCount];
         downSprites= new BufferedImage[frameCount];
         idleSprites= new BufferedImage[frameCount];
+        deathSprites= new BufferedImage[frameCount];
 
         for (int i = 0; i < frameCount; i++) {
             rightSprites[i] = sheet.getSprite(i,2 ); // Extract the sprites
@@ -37,6 +40,7 @@ public class SLime extends Entity {
             upSprites[i] = sheet.getSprite(i, 1);
             downSprites[i] = sheet.getSprite(i,0 );
             idleSprites[i] = sheet.getSprite(i, 4);
+            deathSprites[i]= sheet.getSprite(i, 5);
         }
     }
     public void setAction(){
@@ -59,15 +63,10 @@ public class SLime extends Entity {
             CounterNPC = 0;
         }
         if (Countersprite > 15) {
-            if (Numsprite == 1) {
-                Numsprite = 2;
-            } else if (Numsprite == 2) {
-                Numsprite = 3;
-            } else if (Numsprite == 3) {
-                Numsprite = 4;
-            } else if (Numsprite == 4) {
-                Numsprite = 1;
+            if (Numsprite>3){
+                Numsprite=0;
             }
+            Numsprite++;
             Countersprite = 0;
         }
         collisionOn = false;
@@ -78,9 +77,13 @@ public class SLime extends Entity {
         if (gp.colis.Damaged(this) && gp.player.attack){
             if (!damaged && !invincible){
                 if(life>0) life--;
+                System.out.println(life);
                 invincible=true;
                 damaged=true;
             }
+        }
+        if (life==0) {
+            alive=false;
         }
         if (!gp.player.attack) damaged=false;
         if (!collisionOn) {
@@ -132,11 +135,29 @@ public class SLime extends Entity {
                     image = idleSprites[Numsprite - 1];
                     break;
             }
+            //Hp monster
+            g2.setColor(new Color(35,35,35));
+            g2.fillRect(screenX,screenY-15,gp.tileSize,10);
+            g2.setColor(new Color(255,0,30));
+            g2.fillRect(screenX,screenY-15, life*12,10);
             if (invincible){
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
             }
+            if (!alive) {
+                draw_death(g2);
+            }
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
             //reset;
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
+        }
+    }
+
+    public void draw_death(Graphics2D g2){
+        image=deathSprites[NumDeath];
+        if (Counterdeath>10){
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.2f));
+        }
+        else{
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
         }
     }

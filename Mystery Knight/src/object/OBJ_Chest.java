@@ -3,7 +3,6 @@ package object;
 import main.GamePanel;
 
 import entity.Entity;
-import main.UtilityTool;
 import sprite.SpriteSheet;
 
 import java.awt.*;
@@ -16,10 +15,10 @@ public class OBJ_Chest extends Entity {
         super(gp);
         this.gp=gp;
         name = "Chest";
-        solidregion= new Rectangle(4,0,32,32);
+        solidregion= new Rectangle(8,0,32,32);
         //get image
         try {
-            SpriteSheet sheet = new SpriteSheet("/objects/chest2_closed.png", gp.originalTileSize, gp.originalTileSize,1,1);
+            SpriteSheet sheet = new SpriteSheet("/objects/chest2_closed.png", gp.originalTileSize, gp.originalTileSize);
             image = sheet.getSprite(0, 0);
         } catch(Exception e) {
             e.printStackTrace();

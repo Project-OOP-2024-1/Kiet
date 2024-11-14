@@ -26,7 +26,7 @@ public class OBJ_Fireball extends Projectile {
     }
 
     public void getImage() {
-        SpriteSheet sheet = new SpriteSheet("/objects/fire_ball.png", gp.originalTileSize, gp.originalTileSize, 4, 2);
+        SpriteSheet sheet = new SpriteSheet("/objects/fire_ball.png", gp.originalTileSize, gp.originalTileSize);
 
         rightSprites = new BufferedImage[2];
         leftSprites = new BufferedImage[2];
@@ -34,10 +34,10 @@ public class OBJ_Fireball extends Projectile {
         downSprites = new BufferedImage[2];
 
         for (int i = 0; i < 2; i++) {
-            rightSprites[i] = sheet.getSprite(i, 0); // Extract the sprites
-            leftSprites[i] = sheet.getSprite(i, 1);
-            upSprites[i] = sheet.getSprite(i, 2);
-            downSprites[i] = sheet.getSprite(i, 3);
+            rightSprites[i] = sheet.getSpriteforFire(i, 0); // Extract the sprites
+            leftSprites[i] = sheet.getSpriteforFire(i, 1);
+            upSprites[i] = sheet.getSpriteforFire(i, 2);
+            downSprites[i] = sheet.getSpriteforFire(i, 3);
         }
     }
 }

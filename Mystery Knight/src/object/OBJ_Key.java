@@ -15,7 +15,7 @@ public class OBJ_Key extends Entity {
         name = "Key";
         solidregion=new Rectangle(4,0,32,32);
         try {
-            SpriteSheet sheet = new SpriteSheet("/objects/key_test.png", gp.originalTileSize, gp.originalTileSize,1,1);
+            SpriteSheet sheet = new SpriteSheet("/objects/key_test.png", gp.originalTileSize, gp.originalTileSize);
             image = sheet.getSprite(0, 0);
         } catch(Exception e) {
             e.printStackTrace();

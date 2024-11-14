@@ -20,7 +20,7 @@ public class UI {
 
     public UI(GamePanel gp) {
         this.gp = gp;
-
+        messageOn = false;
         try {
             InputStream is = getClass().getResourceAsStream("/fonts/DroidSans.ttf");
             maruMonica = createFont(Font.TRUETYPE_FONT, is);// coi nhu la phong chu 1
@@ -125,8 +125,9 @@ public class UI {
                 g2.drawString(">", x - gp.tileSize, y);
             }
         } else if (titleScreenState == 1) {
-
             //CLASS SELECTION SCREEN
+            g2.setColor(new Color(0, 0, 0));
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
             g2.setColor(Color.white);
             g2.setFont(g2.getFont().deriveFont(42F));
 

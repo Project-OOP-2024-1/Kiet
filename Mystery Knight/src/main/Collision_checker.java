@@ -81,6 +81,10 @@ public class Collision_checker {
                             t.life--;
                             t.invincible=true;
                         }
+                        if (t.life==0){
+                            t.alive=false;
+                        }
+
 
                     }
                 }
@@ -115,6 +119,11 @@ public class Collision_checker {
             entity.collisionOn=true;
             if (entity.name.equals("village")){
                 gp.ui.messageOn=true;
+            }
+        }
+        else{
+            if (entity.name.equals("village")){
+                gp.ui.messageOn=false;
             }
         }
         // return origin
