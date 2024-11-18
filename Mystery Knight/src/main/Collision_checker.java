@@ -51,7 +51,7 @@ public class Collision_checker {
 
 
     }
-    // for player and having option for projecttile
+    // for player and having option for projectile
     public void checkEntity(Entity entity, Entity[] target){
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
