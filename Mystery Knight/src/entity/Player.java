@@ -2,12 +2,13 @@ package entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 
 import main.GamePanel;
 import main.KeyHandler;
 
-import object.OBJ_Fireball;
+import object.*;
 import sprite.SpriteSheet;
 
 
@@ -18,27 +19,33 @@ public class Player extends Entity {
     KeyHandler keyH;
     // Control
     int frameCount = 4;
+    String add="";
     public final int screenX;
     public final int screenY;
+    public boolean hasKey;
+    public ArrayList<Entity> inventory = new ArrayList<>();
     //skill
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
         this.gp = gp;
         this.keyH = keyH;
+        name="player";
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
         getImage(); // Load the player's sprites
-
+        invincible=false;
         setDefaultValue();
+        setItems();
         projectile=new OBJ_Fireball(gp);
         solidregion = new Rectangle(8,0,32,32);
         Attackregion= new Rectangle(0,0,36,36);
+        hasKey= false;
     }
 
     public void setDefaultValue() {
-        x = gp.tileSize * 21;
-        y = gp.tileSize * 21;
+        x = gp.tileSize*14 ;
+        y = gp.tileSize*12 ;
         speed = 4;
         direction = "idle";
         //player status
@@ -46,6 +53,14 @@ public class Player extends Entity {
         life=6;
         attack=false;
         //
+    }
+    // The order of items in inventory follows the order of the command lines
+    public void setItems() {
+
+        //inventory.add(currentWeapon);
+        inventory.add(new OBJ_Sword(gp));
+        inventory.add(new OBJ_Shield(gp));
+
     }
     // Load sprite sheet and extract the player's walking animation sprites
     public void getImage() {
@@ -95,6 +110,7 @@ public class Player extends Entity {
         gp.colis.checkObject(this,gp.object);
         gp.colis.checkEntity(this, gp.monster);
         gp.colis.checkEntity(this,gp.npc);
+
         if (!collisionOn && !attack){
             switch (direction){
                 case "up":  y -= speed;break;
@@ -119,8 +135,16 @@ public class Player extends Entity {
         Countersprite++;
         if (Countersprite > 20){
             Numsprite++;
-            if (Numsprite>4) Numsprite=1;
+            if (Numsprite>4) Numsprite = 1;
             Countersprite=0;
+        }
+        if (invincible){
+            invincilbleCounter++;
+            if (life>0 && invincilbleCounter==1) life--;
+            if (invincilbleCounter>60) {
+                invincible = false;
+                invincilbleCounter=0;
+            }
         }
         if (keyH.isPressed(75) && !projectile.alive){
             //set sefault
@@ -136,6 +160,14 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
 
         BufferedImage image = null;
+        if (invincible){
+            if (invincilbleCounter<30){
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+            }
+            else {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+            }
+        }
         if (!attack){
             switch (direction) {
                 case "right":
@@ -179,5 +211,6 @@ public class Player extends Entity {
                     break;
             }
         }
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
     }
 }

@@ -23,8 +23,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenHeight = maxScreenRow * tileSize;
 
     //WORLD SETTINGS
-    public final int maxWorldCol = 50;
-    public final int maxWorldRow = 50;
+    public final int maxWorldCol = 60;
+    public final int maxWorldRow = 60;
     //Full Screen
     int screenWidth2  = screenWidth;
     int screenHeight2 = screenHeight;
@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     int FPS = 60;// Frame per second
     //Tile Map
-    TileManager tileM = new TileManager(this);
+    public TileManager tileM = new TileManager(this);
     //KeyHanderler
     KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
@@ -52,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playState = 1;
     public final int pauseState =2;
     public final int dialogueState=3;
+    public final int characterState=4;
     //part of Game setting
     Asset_Setter Setter = new Asset_Setter(this);
     public Collision_checker colis =new Collision_checker(this);
@@ -88,9 +89,7 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
     public void Game_setup(){
-        Setter.setNPC();
-        Setter.setMonster();
-        Setter.setObject();
+        Setter.setGeneral();
         gameState= titleState;
         //
         tempScreen = new BufferedImage(screenWidth,screenHeight,BufferedImage.TYPE_INT_ARGB);
@@ -137,6 +136,10 @@ public class GamePanel extends JPanel implements Runnable {
                 if (e!=null){
                     e.update();
                 }
+            }
+            //Object
+            if (player.hasKey){
+                object[1]=null;
             }
             //Monster
             int i =0;

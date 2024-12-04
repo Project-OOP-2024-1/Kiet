@@ -15,11 +15,10 @@ public class OBJ_Fireball extends Projectile {
         super(gp);
         this.gp = gp;
         name = "Fireball";
-        speed = 8;
+        speed = 10;
         maxLife = 80;
         life = maxLife;
         damage = 2;
-        useCost = 1;
         alive = false;
         solidregion = new Rectangle(0,0,24,24);
         getImage();

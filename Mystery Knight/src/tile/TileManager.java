@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import sprite.SpriteSheet;
 import utility.UtilityTool;
 
 public class TileManager {
@@ -21,8 +22,7 @@ public class TileManager {
     public TileManager(GamePanel gp) {
 
         this.gp = gp;
-
-        tile = new Tile[20];
+        tile = new Tile[600];
         mapTileNum1 = new int[gp.maxWorldCol][gp.maxWorldRow];
         mapTileNum2=  new int[gp.maxWorldCol][gp.maxWorldRow];
         getTileImage();
@@ -32,38 +32,23 @@ public class TileManager {
     }
 
     public void getTileImage() {
-
-        setup(0, "grass1", false);//
-        setup(1, "wall3", true);//
-        setup(2, "water", true);//
-        setup(3, "bg4", false);//
-        setup(4, "tree1", true);//
-        setup(5, "bg5", false);//
-        setup(6, "bridge", false);//
-        setup(7, "hangrao", true);//
-        setup(8, "snow", false);//
-        setup(9, "tree2", true);//
-        setup(10, "tree3", true);//
-        setup(11, "grass2", false);//
-        setup(12, "wood30", true);//
-        setup(13, "redhouse", true);//
-        setup(14, "ph", true);//
-        setup(15, "fences", true);//
-        setup(16, "xuongrong", true);//
-    }
-
-    public void setup(int index, String imagePath, boolean collision) {
-        UtilityTool uTool = new UtilityTool();
-
-        try {
-            tile[index] = new Tile();
-            tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imagePath + ".png"));
-            tile[index].image = uTool.scaleImage(tile[index].image, gp.tileSize, gp.tileSize);
-            tile[index].collision = collision;
-
-        }catch(IOException e) {
-            e.printStackTrace();
+        SpriteSheet sheet = new SpriteSheet("/tiles/map_tileset.png", gp.originalTileSize, gp.originalTileSize);
+        for (int i =0; i< 18;i++){
+            for (int j=0; j<29;j++){
+                tile[i*29+j]=new Tile();
+                tile[i*29+j].image = sheet.getSprite(j, i);
+                tile[i*29+j].collision = false;
+            }
         }
+        //Set up for tile not collision
+        int[] list = {203,204,232,233,261,262,290,291,319,320,348,349,343,372,373,417,418,
+                419,420,446,447,448,449,475,476,477,478,504,505,506,507,458,459,460,461,209,
+                210,211,212,238,241,265,266,267,270,271,272,294 ,301,323,330,352,353,354,357,
+                358,359,383,386,412,413,414,415,155};
+        for(int t : list){
+            tile[t].collision=true;
+        }
+
     }
     public void loadMap1(String filePath) {
         try {

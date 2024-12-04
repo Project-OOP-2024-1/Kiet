@@ -2,6 +2,7 @@ package Monster;
 
 import entity.Entity;
 import main.GamePanel;
+import object.OBJ_Slimeball;
 import sprite.SpriteSheet;
 
 import java.awt.*;
@@ -11,18 +12,24 @@ import java.util.Random;
 public class SLime extends Entity {
     public int frameCount = 4;
     GamePanel gp;
+    public int defaultX=0;
+    public int defaultY=0;
     public SLime(GamePanel gp){
         super(gp);
         this.gp=gp;
         name = "Slime";
-        speed=2;
+        direction="idle";
+        speed=1;
         maxLife=4;
         life=maxLife;
         solidregion= new Rectangle(8,16,32,24);
+        Attackregion= new Rectangle(-gp.tileSize*5,-gp.tileSize*5,gp.tileSize*11,gp.tileSize*11);
         getImage();
+        attack=false;
         alive=true;
         damaged=false;
         death=false;
+        projectile= new OBJ_Slimeball(gp);
     }
     public void getImage(){
         SpriteSheet sheet = new SpriteSheet("/SLIME/silme_animation_w_trans.png", gp.originalTileSize, gp.originalTileSize);
@@ -44,21 +51,96 @@ public class SLime extends Entity {
         }
     }
     public void setAction(){
-        // Set orbit or same thing here;
-        Random rand =new Random();
-        int num =rand.nextInt(5);
-        switch (num){
-            case 0: direction="up"; break;
-            case 1: direction="down";break;
-            case 2: direction="left"; break;
-            case 3: direction="right"; break;
-            case 4: direction="idle"; break;
+        if(defaultX==0 && defaultY==0){
+            defaultX=x;
+            defaultY=y;
+        }
+        if (attack && !collisionOn){
+            if (Math.abs(gp.player.x-x) < Math.abs(gp.player.y-y)){
+                if (Math.abs(gp.player.x-x)>48) {
+                    if (gp.player.x - x > 0) {
+                        direction = "right";
+                    } else if (gp.player.x - x < 0) {
+                        direction = "left";
+                    }
+                }
+                else{
+                    if (gp.player.y>y){
+                        direction="down";
+                    }
+                    else {
+                        direction="up";
+                    }
+                }
+            }
+            else{
+                if(Math.abs(gp.player.y-y)>48) {
+                    if (gp.player.y > y) {
+                        direction = "down";
+                    } else if (gp.player.y < y) {
+                        direction = "up";
+                    }
+                }
+                else {
+                    if (gp.player.x>x){
+                        direction="right";
+                    }
+                    else {
+                        direction="left";
+                    }
+                }
+            }
+        }
+        else{
+            if (Math.abs(defaultX-x) < Math.abs(defaultY-y)){
+                if (Math.abs(defaultX-x)>48) {
+                    if (defaultX - x > 0) {
+                        direction = "right";
+                    } else  {
+                        direction = "left";
+                    }
+                }
+                else{
+                    if (defaultY>y){
+                        direction="down";
+                    }
+                    else {
+                        direction="up";
+                    }
+                }
+            }
+            else{
+                if(defaultY-y>24) {
+                    if (defaultY> y) {
+                        direction = "down";
+                    } else {
+                        direction = "up";
+                    }
+                }
+                else {
+                    if (x<defaultX-gp.tileSize*3){
+                        direction="right";
+                    }
+                    else if(x>defaultX+gp.tileSize*3){
+                        direction="left";
+                    }
+                    else {
+                        Random ran = new Random();
+                        int num= ran.nextInt(3);
+                        switch (num){
+                            case 0: direction="right";break;
+                            case 1: direction="idle"; break;
+                            case 2: direction="left"; break;
+                        }
+                    }
+                }
+            }
         }
     }
     public void update() {
         Countersprite++;
         CounterNPC++;
-        if (CounterNPC > 60) {
+        if (CounterNPC > 30) {
             setAction();
             CounterNPC = 0;
         }
@@ -73,11 +155,11 @@ public class SLime extends Entity {
         gp.colis.checkTile(this);
         gp.colis.checkPlayer(this);
         gp.colis.checkObject(this,gp.object);
+        gp.colis.checkDanger(this);
         //take damage from player
         if (gp.colis.Damaged(this) && gp.player.attack){
             if (!damaged && !invincible){
                 if(life>0) life--;
-                System.out.println(life);
                 invincible=true;
                 damaged=true;
             }
@@ -109,6 +191,11 @@ public class SLime extends Entity {
                 invincilbleCounter=0;
             }
         }
+        if (attack && !projectile.alive){
+            projectile.set(x,y,direction,true,this);
+            gp.projectileList.add(projectile);
+        }
+
     }
     public void draw(Graphics2D g2) {
         image = null;
@@ -141,7 +228,12 @@ public class SLime extends Entity {
             g2.setColor(new Color(255,0,30));
             g2.fillRect(screenX,screenY-15, life*12,10);
             if (invincible){
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+                if (invincilbleCounter<30){
+                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+                }
+                else {
+                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+                }
             }
             if (!alive) {
                 draw_death(g2);
