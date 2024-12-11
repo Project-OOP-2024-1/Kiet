@@ -3,6 +3,7 @@ package human;
 import entity.Character;
 import entity.Entity;
 import entity.Projectile;
+import main.GamePanel;
 import main.KeyHandler;
 import main.SpriteSheet;
 import main.updatable;
@@ -31,7 +32,7 @@ public class Player extends Character implements updatable {
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
         getImage(); // Load the player's sprites
         setDefaultValue();
-        setItems();
+        setItems();//this need to fix
     }
     public void setDefaultValue() {
         x = gp.tileSize*14 ;

@@ -1,12 +1,13 @@
 package entity;
 
+import main.GamePanel;
 import main.updatable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Projectile extends Animation implements updatable {
-    Gamepanel gp;
+    public int speed;
     private Entity user;
     public Projectile(GamePanel gp){
         super(gp);

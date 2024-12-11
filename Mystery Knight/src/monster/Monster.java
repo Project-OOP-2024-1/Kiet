@@ -4,11 +4,14 @@ import entity.Character;
 import main.updatable;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public abstract class Monster extends Character implements updatable {
     int defaultX=0;
     int defaultY=0;
+    public int counterNPC= 0;
+    BufferedImage image;
     public Monster(){
     }
     public void setAction(){

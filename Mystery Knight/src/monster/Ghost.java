@@ -1,15 +1,15 @@
 package monster;
 
 import entity.Projectile;
+import main.GamePanel;
 import main.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
 public class Ghost extends Monster{
-    Gamepanel gp;
     Projectile projectile;
+
     public Ghost(GamePanel gp){
         super(gp);
         this.gp=gp;
@@ -46,91 +46,113 @@ public class Ghost extends Monster{
             deathSprites[i]= sheet.getSprite(i, 5);
         }
     }
-    public void setAction(){
-        if(defaultX==0 && defaultY==0){
-            defaultX=x;
-            defaultY=y;
+    public void update() {
+        counterSprite++;
+        counterNPC++;
+        if (counterNPC > 30) {
+            setAction();
+            counterNPC = 0;
         }
-        if (attack && !collisionOn){
-            if (Math.abs(gp.player.x-x) < Math.abs(gp.player.y-y)){
-                if (Math.abs(gp.player.x-x)>48) {
-                    if (gp.player.x - x > 0) {
-                        direction = "right";
-                    } else if (gp.player.x - x < 0) {
-                        direction = "left";
-                    }
-                }
-                else{
-                    if (gp.player.y>y){
-                        direction="down";
-                    }
-                    else {
-                        direction="up";
-                    }
-                }
+        if (counterSprite > 15) {
+            if (numSprite>3){
+                numSprite=0;
             }
-            else{
-                if(Math.abs(gp.player.y-y)>48) {
-                    if (gp.player.y > y) {
-                        direction = "down";
-                    } else if (gp.player.y < y) {
-                        direction = "up";
-                    }
+            numSprite++;
+            counterSprite = 0;
+        }
+        collisionOn = false;
+        gp.colis.checkTile(this);
+        gp.colis.checkPlayer(this);
+        gp.colis.checkObject(this,gp.object);
+        gp.colis.checkDanger(this);
+        //take damage from player
+        if (gp.colis.Damaged(this) && gp.player.attack){
+            damaged=true;
+        }
+        if (damaged && !invincible){
+            invincible=true;
+            life--;
+        }
+        if (life<=0) {
+            gp.player.inventory.add(new OBJ_Key(gp));
+            alive=false;
+        }
+        if (!gp.player.attack) damaged=false;
+        if (!collisionOn) {
+            switch (direction) {
+                case "up":
+                    y -= speed;
+                    break;
+                case "down":
+                    y += speed;
+                    break;
+                case "right":
+                    x += speed;
+                    break;
+                case "left":
+                    x -= speed;
+                    break;
+            }
+        }
+        if (invincible){
+            invincibleCounter++;
+            if (invincibleCounter>60) {
+                invincible = false;
+                invincibleCounter=0;
+            }
+        }
+        if (attack && !projectile.alive){
+            projectile.set(x,y,direction,true,this);
+            projectile.speed=1;
+            gp.projectileList.add(projectile);
+        }
+
+    }
+    public void draw(Graphics2D g2) {
+        image = null;
+        int screenX = x - gp.player.x + gp.player.screenX;
+        int screenY = y - gp.player.y + gp.player.screenY;
+        if (x + gp.tileSize > gp.player.x - gp.player.screenX &&
+                x - gp.tileSize < gp.player.x + gp.player.screenX &&
+                y + gp.tileSize > gp.player.y - gp.player.screenY &&
+                y - gp.tileSize < gp.player.y + gp.player.screenY) {
+            switch (direction) {
+                case "right":
+                    image = rightSprites[numSprite - 1];
+                    break;
+                case "left":
+                    image = leftSprites[numSprite - 1];
+                    break;
+                case "down":
+                    image = downSprites[numSprite - 1];
+                    break;
+                case "up":
+                    image = upSprites[numSprite - 1];
+                    break;
+                case "idle":
+                    image = idleSprites[numSprite - 1];
+                    break;
+            }
+            //Hp monster
+            g2.setColor(new Color(35,35,35));
+            g2.fillRect(screenX,screenY-15,120,10);
+            g2.setColor(new Color(255,0,30));
+            g2.fillRect(screenX,screenY-15, life*10,10);
+            if (invincible){
+                if (invincibleCounter<30){
+                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
                 }
                 else {
-                    if (gp.player.x>x){
-                        direction="right";
-                    }
-                    else {
-                        direction="left";
-                    }
+                    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
                 }
             }
-        }
-        else{
-            if (Math.abs(defaultX-x) < Math.abs(defaultY-y)){
-                if (Math.abs(defaultX-x)>48) {
-                    if (defaultX - x > 0) {
-                        direction = "right";
-                    } else  {
-                        direction = "left";
-                    }
-                }
-                else{
-                    if (defaultY>y){
-                        direction="down";
-                    }
-                    else {
-                        direction="up";
-                    }
-                }
+            if (!alive) {
+                draw_death(g2);
             }
-            else{
-                if(defaultY-y>24) {
-                    if (defaultY> y) {
-                        direction = "down";
-                    } else {
-                        direction = "up";
-                    }
-                }
-                else {
-                    if (x<defaultX-gp.tileSize*3){
-                        direction="right";
-                    }
-                    else if(x>defaultX+gp.tileSize*3){
-                        direction="left";
-                    }
-                    else {
-                        Random ran = new Random();
-                        int num= ran.nextInt(3);
-                        switch (num){
-                            case 0: direction="right";break;
-                            case 1: direction="idle"; break;
-                            case 2: direction="left"; break;
-                        }
-                    }
-                }
-            }
+            g2.drawImage(image, screenX, screenY, 30*4, 30*4, null);
+            //reset;
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
         }
     }
+
 }

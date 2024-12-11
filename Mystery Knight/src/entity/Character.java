@@ -1,10 +1,11 @@
 package entity;
 
+import main.GamePanel;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Character extends Animation {
-    public int speed;
     public int counterDeath= 0;
     public int NumDeath = 0;
     public int invincibleCounter=0;
@@ -13,7 +14,9 @@ public class Character extends Animation {
     public boolean attack;
     public Rectangle Attackregion;
     BufferedImage image;
-    public Character(){
+    public Character(GamePanel gp){
+        super(gp);
+        this.gp=gp;
     }
     //method
     public void update_death(){

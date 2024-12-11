@@ -1,5 +1,7 @@
 package entity;
 
+import main.GamePanel;
+
 import java.awt.*;
 
 public abstract class Entity {
@@ -9,7 +11,10 @@ public abstract class Entity {
     public boolean alive;
     public int frameCount;
     public Rectangle solidregion;
-    public Entity(){
+    protected GamePanel gp;
+
+    public Entity(GamePanel gp){
+        this.gp=gp;
     }
     public void getImage(){};
 }

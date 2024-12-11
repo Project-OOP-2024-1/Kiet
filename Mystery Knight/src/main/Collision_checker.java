@@ -3,7 +3,9 @@ package main;
 import entity.Animation;
 import entity.Character;
 import entity.Entity;
+import entity.inAnimation;
 import human.Player;
+import monster.Monster;
 
 public class Collision_checker {
     GamePanel gp;
@@ -11,7 +13,7 @@ public class Collision_checker {
         this.gp=gp;
     }
 
-    public void checkTile(Character entity){
+    public void checkTile(Animation entity){
         int Left_Xentity= entity.x+entity.solidregion.x;
         int Right_Xentity=entity.x+entity.solidregion.x+entity.solidregion.width;
         int Top_Yentity= entity.y+entity.solidregion.y;
@@ -66,12 +68,12 @@ public class Collision_checker {
 
     }
     // for player and having option for projecttile
-    public void checkEntity(Entity entity, Entity[] target){
+    public void checkEntity(Character entity, Character[] target){
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
         int default_t_x;
         int default_t_y;
-        for(Entity t: target){
+        for(Character t: target){
             if (t!=null){
                 default_t_x=t.solidregion.x;
                 default_t_y=t.solidregion.y;
@@ -96,7 +98,7 @@ public class Collision_checker {
                         gp.ui.messageOn=true;
                     }
                     //1 time run
-                    if (entity==gp.player.projectile){
+                    if (entity.name.equals("Fireball")){
                         t.damaged=true;
                     }
                 }
@@ -114,7 +116,7 @@ public class Collision_checker {
         }
     }
     // for monster
-    public void checkPlayer(Entity entity){
+    public void checkPlayer(Character entity){
         Entity t =gp.player;
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
@@ -153,8 +155,8 @@ public class Collision_checker {
         t.solidregion.y=default_t_y;
     }
     // for monster
-    public boolean Damaged(Entity entity){
-        Entity t =gp.player;
+    public boolean Damaged(Monster entity){
+        Player t =gp.player;
         boolean result=false;
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
@@ -190,8 +192,8 @@ public class Collision_checker {
         return result;
     }
     // for monster
-    public void checkDanger(Entity entity){
-        Entity t =gp.player;
+    public void checkDanger(Monster entity){
+        Player t =gp.player;
         int default_e_x=entity.Attackregion.x;
         int default_e_y=entity.Attackregion.y;
         int default_t_x=t.solidregion.x;
@@ -216,7 +218,7 @@ public class Collision_checker {
         t.solidregion.y=default_t_y;
     }
     //for checkObjects
-    public void checkObject(Entity entity, Entity[] target){
+    public void checkObject(Animation entity, Entity[] target){
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
         int default_t_x;
@@ -257,11 +259,11 @@ public class Collision_checker {
         }
     }
     //for Events
-    public void checkEvent(Entity[] event) {
-        Entity t = gp.player;
+    public void checkEvent(inAnimation[] event) {
+        Player t = gp.player;
         int defaultX= t.solidregion.x;
         int defaultY= t.solidregion.y;
-        for(Entity e: event){
+        for(inAnimation e: event){
             if (e!=null){
                 t.solidregion.x= t.x+t.solidregion.x;
                 t.solidregion.y=t.y +t.solidregion.y;

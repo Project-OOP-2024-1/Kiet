@@ -1,5 +1,7 @@
 package entity;
 
+import main.GamePanel;
+
 import java.awt.image.BufferedImage;
 
 public class Animation extends Entity {
@@ -8,9 +10,14 @@ public class Animation extends Entity {
     public int numSprite = 1;
     public int life;
     public int maxLife;
+    public int speed;
     public int damage;
     public String direction;
     public boolean collisionOn;
     public boolean physical;
     public boolean death;
+    public Animation(GamePanel gp) {
+        super(gp);
+        this.gp=gp;
+    }
 }
