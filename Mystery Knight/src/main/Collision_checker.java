@@ -1,9 +1,9 @@
 package main;
 
-import entity.Animation;
+import entity.Animated;
 import entity.Character;
 import entity.Entity;
-import entity.inAnimation;
+import entity.Inanimate;
 import human.Player;
 import monster.Monster;
 
@@ -13,7 +13,7 @@ public class Collision_checker {
         this.gp=gp;
     }
 
-    public void checkTile(Animation entity){
+    public void checkTile(Animated entity){
         int Left_Xentity= entity.x+entity.solidregion.x;
         int Right_Xentity=entity.x+entity.solidregion.x+entity.solidregion.width;
         int Top_Yentity= entity.y+entity.solidregion.y;
@@ -67,8 +67,8 @@ public class Collision_checker {
 
 
     }
-    // for player and having option for projecttile
-    public void checkEntity(Character entity, Character[] target){
+    // for animated
+    public void checkEntity(Animated entity, Character[] target){
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
         int default_t_x;
@@ -91,21 +91,6 @@ public class Collision_checker {
                 }
                 if(entity.solidregion.intersects(t.solidregion)) {
                     entity.collisionOn=true;
-                    if (t.name.equals("Shit")){
-                        entity.invincible=true;
-                    }//fix this
-                    if (t.name.equals("village")){
-                        gp.ui.messageOn=true;
-                    }
-                    //1 time run
-                    if (entity.name.equals("Fireball")){
-                        t.damaged=true;
-                    }
-                }
-                else {
-                    if (t.name.equals("village")){
-                        gp.ui.messageOn=false;
-                    }
                 }
                 // return origin
                 entity.solidregion.x=default_e_x;
@@ -116,7 +101,7 @@ public class Collision_checker {
         }
     }
     // for monster
-    public void checkPlayer(Character entity){
+    public void checkPlayer(Animated entity){
         Entity t =gp.player;
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
@@ -136,17 +121,6 @@ public class Collision_checker {
         }
         if(entity.solidregion.intersects(t.solidregion)) {
             entity.collisionOn=true;
-            if (entity.name.equals("Slimeball")){
-                gp.player.invincible=true;
-            }
-            if (entity.name.equals("village")){
-                gp.ui.messageOn=true;
-            }
-        }
-        else{
-            if (entity.name.equals("village")){
-                gp.ui.messageOn=false;
-            }
         }
         // return origin
         entity.solidregion.x=default_e_x;
@@ -217,8 +191,8 @@ public class Collision_checker {
         t.solidregion.x=default_t_x;
         t.solidregion.y=default_t_y;
     }
-    //for checkObjects
-    public void checkObject(Animation entity, Entity[] target){
+    //for Animated check Objects
+    public void checkObject(Animated entity, Entity[] target){
         int default_e_x=entity.solidregion.x;
         int default_e_y=entity.solidregion.y;
         int default_t_x;
@@ -258,12 +232,13 @@ public class Collision_checker {
             }
         }
     }
-    //for Events
-    public void checkEvent(inAnimation[] event) {
+    //for Player checks Events
+    public void checkEvent() {
         Player t = gp.player;
+
         int defaultX= t.solidregion.x;
         int defaultY= t.solidregion.y;
-        for(inAnimation e: event){
+        for(Inanimate e: gp.event){
             if (e!=null){
                 t.solidregion.x= t.x+t.solidregion.x;
                 t.solidregion.y=t.y +t.solidregion.y;
@@ -272,7 +247,7 @@ public class Collision_checker {
                 e.solidregion.y=e.y;
                 if(e.solidregion.intersects(t.solidregion)) {
                     System.out.println("Oke");
-                    e.update();
+                    //fix
                 }
                 // return origin
                 t.solidregion.x=defaultX;
@@ -283,4 +258,5 @@ public class Collision_checker {
         }
 
     }
+    //for Projectile check
 }

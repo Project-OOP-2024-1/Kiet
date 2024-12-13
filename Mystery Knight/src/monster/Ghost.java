@@ -3,16 +3,18 @@ package monster;
 import entity.Projectile;
 import main.GamePanel;
 import main.SpriteSheet;
+import object.Key;
+import projectiles.Soul;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Ghost extends Monster{
     Projectile projectile;
-
     public Ghost(GamePanel gp){
         super(gp);
         this.gp=gp;
+        frameCount=5;
         name = "Ghost";
         direction="idle";
         speed=1;
@@ -20,93 +22,12 @@ public class Ghost extends Monster{
         life=maxLife;
         solidregion= new Rectangle(8,16,80,80);
         Attackregion= new Rectangle(-gp.tileSize*5,-gp.tileSize*5,gp.tileSize*11,gp.tileSize*11);
-        getImage();
+        image=getImage("/characters/pixil-frame-0.png");
         attack=false;
         alive=true;
         damaged=false;
         death=false;
-        projectile= new OBJ_Soul(gp);
-    }
-    public void getImage(){
-        SpriteSheet sheet = new SpriteSheet("/SLIME/pixil-frame-0.png", 30, 30);
-
-        rightSprites = new BufferedImage[frameCount];
-        leftSprites = new BufferedImage[frameCount];
-        upSprites = new BufferedImage[frameCount];
-        downSprites= new BufferedImage[frameCount];
-        idleSprites= new BufferedImage[frameCount];
-        deathSprites= new BufferedImage[frameCount];
-
-        for (int i = 0; i < frameCount; i++) {
-            rightSprites[i] = sheet.getSprite(i,1 ); // Extract the sprites
-            leftSprites[i] = sheet.getSprite(i, 0);
-            upSprites[i] = sheet.getSprite(i, 3);
-            downSprites[i] = sheet.getSprite(i,2 );
-            idleSprites[i] = sheet.getSprite(i, 4);
-            deathSprites[i]= sheet.getSprite(i, 5);
-        }
-    }
-    public void update() {
-        counterSprite++;
-        counterNPC++;
-        if (counterNPC > 30) {
-            setAction();
-            counterNPC = 0;
-        }
-        if (counterSprite > 15) {
-            if (numSprite>3){
-                numSprite=0;
-            }
-            numSprite++;
-            counterSprite = 0;
-        }
-        collisionOn = false;
-        gp.colis.checkTile(this);
-        gp.colis.checkPlayer(this);
-        gp.colis.checkObject(this,gp.object);
-        gp.colis.checkDanger(this);
-        //take damage from player
-        if (gp.colis.Damaged(this) && gp.player.attack){
-            damaged=true;
-        }
-        if (damaged && !invincible){
-            invincible=true;
-            life--;
-        }
-        if (life<=0) {
-            gp.player.inventory.add(new OBJ_Key(gp));
-            alive=false;
-        }
-        if (!gp.player.attack) damaged=false;
-        if (!collisionOn) {
-            switch (direction) {
-                case "up":
-                    y -= speed;
-                    break;
-                case "down":
-                    y += speed;
-                    break;
-                case "right":
-                    x += speed;
-                    break;
-                case "left":
-                    x -= speed;
-                    break;
-            }
-        }
-        if (invincible){
-            invincibleCounter++;
-            if (invincibleCounter>60) {
-                invincible = false;
-                invincibleCounter=0;
-            }
-        }
-        if (attack && !projectile.alive){
-            projectile.set(x,y,direction,true,this);
-            projectile.speed=1;
-            gp.projectileList.add(projectile);
-        }
-
+        projectile= new Soul(gp);
     }
     public void draw(Graphics2D g2) {
         image = null;

@@ -6,14 +6,15 @@ import entity.Projectile;
 import main.GamePanel;
 import main.KeyHandler;
 import main.SpriteSheet;
-import main.updatable;
+import main.Updatable;
+import projectiles.Fireball;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Player extends Character implements updatable {
+public class Player extends Character implements Updatable {
     public int attackSprite = 0;
     private BufferedImage[] rightAttack, leftAttack, upAttack, downAttack;
     public int NumAttack = 0;
@@ -32,7 +33,7 @@ public class Player extends Character implements updatable {
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
         getImage(); // Load the player's sprites
         setDefaultValue();
-        setItems();//this need to fix
+//        setItems();//this need to fix
     }
     public void setDefaultValue() {
         x = gp.tileSize*14 ;
@@ -45,7 +46,7 @@ public class Player extends Character implements updatable {
         attack=false;
         invincible=false;
         //
-        projectile=new OBJ_Fireball(gp);
+        projectile=new Fireball(gp);
         solidregion = new Rectangle(8,20,32,28);
         Attackregion= new Rectangle(0,0,36,36);
     }
@@ -101,7 +102,7 @@ public class Player extends Character implements updatable {
         gp.colis.checkObject(this,gp.object);
         gp.colis.checkEntity(this, gp.monster);
         gp.colis.checkEntity(this,gp.npc);
-        gp.colis.checkEvent(gp.event);
+        gp.colis.checkEvent();
         if (!collisionOn && !attack){
             switch (direction){
                 case "up":  y -= speed;break;

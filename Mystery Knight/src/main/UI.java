@@ -1,8 +1,8 @@
 package main;
 import entity.Entity;
-import object.OBJ_Fragment;
-import object.OBJ_Mushroom;
-import object.OBJ_Portion;
+import object.Fragment;
+import object.Mushroom;
+import object.Potion;
 
 import java.awt.*;
 import java.io.IOException;
@@ -435,7 +435,7 @@ public class UI {
                 case 3:currentDialogue="Old village:\nYeah, but you must gather 8 mushrooms!";break;
                 case 4:
                     currentDialogue="Old village:\nHere is it!";
-                    gp.player.inventory.add(new OBJ_Mushroom(gp));
+                    gp.player.inventory.add(new Mushroom(gp));
                     addMessage("Receive mushroom");
                     break;
                 case 5:
@@ -451,7 +451,7 @@ public class UI {
                 case 6, 9:currentDialogue="               Complete mission!";break;
                 case 7:
                     currentDialogue="Old village:\nOkay!Now move to lake and take cure water!";
-                    object= new OBJ_Portion(gp);
+                    object= new Potion(gp);
                     object.update();
                     gp.player.inventory.add(object);
                     gp.player.inventory.add(object);
@@ -489,7 +489,7 @@ public class UI {
                 case 1:currentDialogue="Old village:\nOkay now!Are you ready?";break;
                 case 2:
                     currentDialogue="Here is key to activate the gate!";
-                    object=new OBJ_Fragment(gp);
+                    object=new Fragment(gp);
                     gp.player.inventory.add(object);
                     addMessage("Receiving the fragment");
                     break;

@@ -1,9 +1,11 @@
 package main;
 
-import entity.Entity;
-import entity.inAnimation;
+import entity.*;
+import human.NPC;
 import human.Player;
 import monster.Monster;
+import object.Heart;
+import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -35,18 +37,17 @@ public class GamePanel extends JPanel implements Runnable {
     int FPS = 60;// Frame per second
     //Tile Map
     public TileManager tileM = new TileManager(this);
-    //KeyHanderler
+    //KeyHandler
     KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
     //Player
     public Player player = new Player(this, keyH);
     //Object
     public Monster[] monster = new Monster[20];
-    public inAnimation[] object = new inAnimation[20];
-    public inAnimation[] event = new inAnimation[20];
-    OBJ_heart player_heart = new OBJ_heart(this);
-    public ArrayList<Entity> projectileList = new ArrayList<>();
-    ArrayList<Entity> entity_list= new ArrayList<>();
+    public SuperObject[] object = new SuperObject[20];
+    Heart player_heart = new Heart(this);
+    public ArrayList<Projectile> projectileList = new ArrayList<>();
+    public ArrayList<Updatable> entityList= new ArrayList<>();
     //GameState
     public int gameState;
     public  final int titleState = 0;
@@ -58,7 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
     Asset_Setter Setter = new Asset_Setter(this);
     public Collision_checker colis =new Collision_checker(this);
     //Npc
-    public Entity[] npc = new Entity[10];
+    public NPC[] npc = new NPC[10];
     // UI
     public UI ui;
 
@@ -131,16 +132,16 @@ public class GamePanel extends JPanel implements Runnable {
     public void update() {
         if (gameState==playState) {
             player.update();
-            player_heart.update(player);
+            player_heart.update();
             //NPC
-            for (Entity e : npc){
+            for (NPC e : npc){
                 if (e!=null){
                     e.update();
                 }
             }
             //Monster
             int i =0;
-            for (Entity e : monster){
+            for (Monster e : monster){
                 if (e!=null && e.life!=0){
                     e.update();
                 }
@@ -186,45 +187,35 @@ public class GamePanel extends JPanel implements Runnable {
             //player heart
             player_heart.draw(g2);
             //player
-            entity_list.add(player);
+            entityList.add(player);
             //event
-            for (Entity e : event) {
+
+            //npc
+            for (NPC e : npc) {
                 if (e != null) {
-                    e.draw(g2);
-                }
-            }
-            //NPC
-            for (Entity e : npc) {
-                if (e != null) {
-                    entity_list.add(e);
+                    entityList.add(e);
                 }
             }
             //Object
-            for (Entity e : object) {
+            for (SuperObject e : object) {
                 if (e != null) {
-                    entity_list.add(e);
+                    entityList.add(e);
                 }
             }
+            player.draw(g2);
             //Monster
-            for (Entity e : monster) {
+            for (Monster e : monster) {
                 if (e != null && !e.death) {
-                    entity_list.add(e);
+                    entityList.add(e);
                 }
             }
             //Skill
-            for (Entity entity : projectileList) {
+            for (Projectile entity : projectileList) {
                 if (entity != null) {
-                    entity_list.add(entity);
+                    entityList.add(entity);
                 }
             }
-            //Sorting
-            entity_list.sort((o1, o2) -> Integer.compare(o1.y, o2.y));
-            //Draw Entity
-            for (Entity entity : entity_list) {
-                entity.draw(g2);
-            }
-            //Entity
-            entity_list.clear();
+            entityList.sort(((o1, o2) -> {o1.y,o2.y}));
 
             //Pause state
             ui.draw(g2);

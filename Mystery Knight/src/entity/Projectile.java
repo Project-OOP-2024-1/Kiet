@@ -1,20 +1,20 @@
 package entity;
 
 import main.GamePanel;
-import main.updatable;
+import main.Updatable;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Projectile extends Animation implements updatable {
+public class Projectile extends Animated implements Updatable {
     public int speed;
-    private Entity user;
+    private Character user;
     public Projectile(GamePanel gp){
         super(gp);
         this.gp = gp;
         collisionOn=false;
     }
-    public void set(int x, int y, String direction,boolean alive, Entity user){
+    public void set(int x, int y, String direction,boolean alive, Character user){
         this.x = x;
         this.y = y;
         this.direction=direction;
@@ -26,13 +26,13 @@ public class Projectile extends Animation implements updatable {
     public void update() {
         collisionOn=false;
         gp.colis.checkTile(this);
-        if (!user.name.equals("Slime")){
-            gp.colis.checkEntity(this, gp.monster);
+        gp.colis.checkObject(this,gp.object);
+        if (user.name.equals("Player")){
+            gp.colis.checkEntity(this,gp.monster);
         }
-        else {
+        else{
             gp.colis.checkPlayer(this);
         }
-        gp.colis.checkObject(this,gp.object);
         if (!collisionOn) {
             if (direction.equals("up")) y -= speed;
             if (direction.equals("down") || direction.equals(("idle"))) y += speed;

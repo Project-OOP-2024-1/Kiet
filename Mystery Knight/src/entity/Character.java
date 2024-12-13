@@ -3,9 +3,8 @@ package entity;
 import main.GamePanel;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
-public class Character extends Animation {
+public class Character extends Animated {
     public int counterDeath= 0;
     public int NumDeath = 0;
     public int invincibleCounter=0;
@@ -13,7 +12,6 @@ public class Character extends Animation {
     public boolean invincible;
     public boolean attack;
     public Rectangle Attackregion;
-    BufferedImage image;
     public Character(GamePanel gp){
         super(gp);
         this.gp=gp;
