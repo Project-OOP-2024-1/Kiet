@@ -10,7 +10,6 @@ public class Object extends Entity {
     public Object(GameSetting gs, int width, int height) {
         super(gs);
         this.gs=gs;
-        getImage(name,width,height);
     }
 
     @Override

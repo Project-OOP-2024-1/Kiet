@@ -1,26 +1,29 @@
 package characters;
 
 import entity.DeathAnimation;
+import entity.Entity;
 import entity.SolidEntity;
 import main.GameSetting;
+import objects.Object;
 import processor.SpriteSheet;
 import processor.KeyHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class Player extends SolidEntity implements DeathAnimation {
-    private final KeyHandler keyH;
     public int screenX;
     public int screenY;
     private BufferedImage[] rightAttack,leftAttack,upAttack,downAttack;
-    private boolean attack;
+    public boolean attack;
     private int attackSprite=0;
     private int numAttack;
-    Projectile projectile;
-    public Player(GameSetting gs, KeyHandler keyH,int x,int y) {
+    public Projectile projectile;
+    public ArrayList<Object> inventory=new ArrayList<>();
+    public Player(GameSetting gs,int x,int y) {
         super(gs);
-        this.keyH=keyH;
         this.gs=gs;
         name="Player";
         this.x=x;
@@ -65,12 +68,6 @@ public class Player extends SolidEntity implements DeathAnimation {
         collisionOn=false;
         gs.collisionChecker.checkTile(this);
         gs.collisionChecker.checkEntity(this,gs.monster);
-        if (keyH.isPressed(76) && !attack) attack=true;
-        if (keyH.isPressed(87)) direction = "up";
-        else if (keyH.isPressed(83)) direction = "down";
-        else if (keyH.isPressed(68)) direction = "right";
-        else if (keyH.isPressed(65)) direction = "left";
-        else direction= "idle";
         if(!collisionOn && !attack){
             switch (direction){
                 case "up":  y -= speed;break;
@@ -95,12 +92,6 @@ public class Player extends SolidEntity implements DeathAnimation {
                 }
                 attackSprite=0;
             }
-        }
-        if (keyH.isPressed(75) && !projectile.alive){
-            //set sefault
-            projectile.set(x,y,direction,true,true,8);
-            //add to list
-            gs.projectile.add(projectile);
         }
     }
 

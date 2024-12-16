@@ -4,7 +4,6 @@ import characters.NPC;
 import characters.Player;
 import entity.SolidEntity;
 import processor.CollisionChecker;
-import processor.KeyHandler;
 import tiles.TileManager;
 
 import java.util.ArrayList;
@@ -23,8 +22,6 @@ public class GameSetting {
     //WORLD SETTINGS
     public final int maxWorldCol = 60;
     public final int maxWorldRow = 60;
-    //Game attribute
-    KeyHandler keyH;
     //Test
     public TileManager tileM;
     public Player player;
@@ -32,15 +29,14 @@ public class GameSetting {
     public ArrayList<SolidEntity> monster;
     public ArrayList<SolidEntity> projectile;
     public GameSetting(){
-        keyH = new KeyHandler(this);
-        player= new Player(this,keyH,14*tileSize,12*tileSize);
+        player= new Player(this,14*tileSize,12*tileSize);
         collisionChecker = new CollisionChecker(this);
         tileM=new TileManager(this);
         monster=new ArrayList<>();
         projectile=new ArrayList<>();
     }
     public void Setting(){
-        setNPC("GirlMagician",6,14,15,120,120,3,2,false);
+        setNPC("GirlMagician",6,14,15,180,180,3,2,false);
     }
     private void setNPC(String name,int maxLife, int x, int y, int width, int height, int scale,int speed, boolean isMonster){
         monster.add(new NPC(this,name,maxLife, x, y, width, height,  scale,speed, isMonster));
