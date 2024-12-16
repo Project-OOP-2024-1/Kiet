@@ -26,27 +26,28 @@ public class GameSetting {
     public TileManager tileM;
     public Player player;
     public CollisionChecker collisionChecker;
-    public ArrayList<SolidEntity> monster;
+    public ArrayList<SolidEntity> npc;
     public ArrayList<SolidEntity> projectile;
     public GameSetting(){
         player= new Player(this,14*tileSize,12*tileSize);
         collisionChecker = new CollisionChecker(this);
         tileM=new TileManager(this);
-        monster=new ArrayList<>();
+        npc=new ArrayList<>();
         projectile=new ArrayList<>();
     }
     public void Setting(){
-        setNPC("GirlMagician",6,14,15,180,180,3,2,false);
+        setNPC("GirlMagician",6,14,15,180,180,2,2,false);
+        setNPC("Slime",8,16,17,16,16,1,3,true);
     }
     private void setNPC(String name,int maxLife, int x, int y, int width, int height, int scale,int speed, boolean isMonster){
-        monster.add(new NPC(this,name,maxLife, x, y, width, height,  scale,speed, isMonster));
+        npc.add(new NPC(this,name,maxLife, x, y, width, height,  scale,speed, isMonster));
     }
     public ArrayList<SolidEntity> orderDraw() {
         ArrayList<SolidEntity> entityList = new ArrayList<>();
         //player
         entityList.add(player);
         //monster
-        entityList.addAll(monster);
+        entityList.addAll(npc);
         entityList.addAll(projectile);
         entityList.sort((o1, o2) -> Integer.compare(o1.y,o2.y));
         return entityList;

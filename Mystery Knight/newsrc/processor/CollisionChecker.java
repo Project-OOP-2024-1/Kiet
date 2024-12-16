@@ -1,7 +1,9 @@
 package processor;
 
+import characters.NPC;
+import characters.Player;
+import characters.Projectile;
 import entity.SolidEntity;
-import main.GamePanel;
 import main.GameSetting;
 
 import java.util.ArrayList;
@@ -13,15 +15,15 @@ public class CollisionChecker {
     }
     //checkTile for solidEntity
     public void checkTile(SolidEntity entity){
-        int Left_Xentity= entity.x+entity.solidArea.x;
-        int Right_Xentity=entity.x+entity.solidArea.x+entity.solidArea.width;
-        int Top_Yentity= entity.y+entity.solidArea.y;
-        int Bottom_Yentity= entity.y+entity.solidArea.y+entity.solidArea.height;
+        int leftXEntity= entity.x+entity.solidArea.x;
+        int rightXEntity=entity.x+entity.solidArea.x+entity.solidArea.width;
+        int topYEntity= entity.y+entity.solidArea.y;
+        int bottomYEntity= entity.y+entity.solidArea.y+entity.solidArea.height;
 
-        int Left_Col = Left_Xentity/gs.tileSize;
-        int Right_Col = Right_Xentity/gs.tileSize;
-        int Top_Row = Top_Yentity/gs.tileSize;
-        int Bottom_Row = Bottom_Yentity/gs.tileSize;
+        int Left_Col = leftXEntity/gs.tileSize;
+        int Right_Col = rightXEntity/gs.tileSize;
+        int Top_Row = topYEntity/gs.tileSize;
+        int Bottom_Row = bottomYEntity/gs.tileSize;
 
         int numTile1_1=0;
         int numTile1_2=0;
@@ -29,21 +31,21 @@ public class CollisionChecker {
         int numTile2_2=0;
         switch (entity.direction){
             case "up":
-                Top_Row = (Top_Yentity-entity.speed)/gs.tileSize;
+                Top_Row = (topYEntity-entity.speed)/gs.tileSize;
                 numTile1_1=gs.tileM.mapTileNum1[Left_Col][Top_Row];
                 numTile1_2=gs.tileM.mapTileNum1[Right_Col][Top_Row];
                 numTile2_1=gs.tileM.mapTileNum2[Left_Col][Top_Row];
                 numTile2_2=gs.tileM.mapTileNum2[Right_Col][Top_Row];
                 break;
             case "down":
-                Bottom_Row = (Bottom_Yentity+entity.speed)/gs.tileSize;
+                Bottom_Row = (bottomYEntity+entity.speed)/gs.tileSize;
                 numTile1_1=gs.tileM.mapTileNum1[Left_Col][Bottom_Row];
                 numTile1_2=gs.tileM.mapTileNum1[Right_Col][Bottom_Row];
                 numTile2_1=gs.tileM.mapTileNum2[Left_Col][Bottom_Row];
                 numTile2_2=gs.tileM.mapTileNum2[Right_Col][Bottom_Row];
                 break;
             case  "right":
-                Right_Col = (Right_Xentity+entity.speed)/gs.tileSize;
+                Right_Col = (rightXEntity+entity.speed)/gs.tileSize;
                 numTile1_1=gs.tileM.mapTileNum1[Right_Col][Bottom_Row];
                 numTile1_2=gs.tileM.mapTileNum1[Right_Col][Top_Row];
                 numTile2_1=gs.tileM.mapTileNum2[Right_Col][Bottom_Row];
@@ -51,7 +53,7 @@ public class CollisionChecker {
 
                 break;
             case "left":
-                Left_Col = (Left_Xentity-entity.speed)/gs.tileSize;
+                Left_Col = (leftXEntity-entity.speed)/gs.tileSize;
                 numTile1_1=gs.tileM.mapTileNum1[Left_Col][Bottom_Row];
                 numTile1_2=gs.tileM.mapTileNum1[Left_Col][Top_Row];
                 numTile2_1=gs.tileM.mapTileNum2[Left_Col][Bottom_Row];
@@ -90,6 +92,13 @@ public class CollisionChecker {
                 }
                 if(entity.solidArea.intersects(t.solidArea)) {
                     entity.collisionOn=true;
+                    if (entity instanceof Projectile && !t.name.equals("GirlMagician")){
+                        if (!t.invincible){
+                            t.life--;
+                            t.invincible=true;
+                            System.out.println("Yes, I var npc");
+                        }
+                    }
                 }
                 // return origin
                 entity.solidArea.x=default_e_x;
@@ -120,11 +129,30 @@ public class CollisionChecker {
         }
         if(entity.solidArea.intersects(t.solidArea)) {
             entity.collisionOn=true;
+            if (entity instanceof Projectile){
+                System.out.println("Yes,I var player");
+                t.life--;
+            }
         }
         // return origin
         entity.solidArea.x=default_e_x;
         entity.solidArea.y=default_e_y;
         t.solidArea.x=default_t_x;
         t.solidArea.y=default_t_y;
+    }
+    //check monster whether it take damage from player
+    public void Damaged(NPC npc){
+        Player player=gs.player;
+        int distance= (int) Math.sqrt((player.x-npc.x)*(player.x-npc.x)+(player.y-npc.y)*(player.y-npc.y));
+        if(player.attack && !npc.invincible && distance<npc.scale*45){
+            if((player.y<npc.y && player.direction.equals("down")) ||
+                (player.y<npc.y && player.direction.equals("idle"))||
+                (player.y>npc.y && player.direction.equals("up"))  ||
+                (player.x>npc.x && player.direction.equals("left"))||
+                (player.x<npc.x && player.direction.equals("right"))){
+                npc.invincible=true;
+                npc.life--;
+            }
+        }
     }
 }

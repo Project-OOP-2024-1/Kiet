@@ -1,25 +1,25 @@
 package characters;
 
 import entity.DeathAnimation;
-import entity.Entity;
 import entity.SolidEntity;
 import main.GameSetting;
 import objects.Object;
 import processor.SpriteSheet;
-import processor.KeyHandler;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Player extends SolidEntity implements DeathAnimation {
     public int screenX;
     public int screenY;
     private BufferedImage[] rightAttack,leftAttack,upAttack,downAttack;
     public boolean attack;
+    private int deathSprite=0;
+    private int numDeath=0;
     private int attackSprite=0;
-    private int numAttack;
+    private int numAttack=0;
+    private int invincibleCounter =0;
     public Projectile projectile;
     public ArrayList<Object> inventory=new ArrayList<>();
     public Player(GameSetting gs,int x,int y) {
@@ -67,7 +67,7 @@ public class Player extends SolidEntity implements DeathAnimation {
     public void update() {
         collisionOn=false;
         gs.collisionChecker.checkTile(this);
-        gs.collisionChecker.checkEntity(this,gs.monster);
+        gs.collisionChecker.checkEntity(this,gs.npc);
         if(!collisionOn && !attack){
             switch (direction){
                 case "up":  y -= speed;break;
@@ -76,12 +76,14 @@ public class Player extends SolidEntity implements DeathAnimation {
                 case  "left" : x-=speed;break;
             }
         }
+        //Sprite when walk
         counterSprite++;
         if (counterSprite > 20){
             numSprite++;
             if (numSprite>frameCount-1) numSprite = 0;
             counterSprite=0;
         }
+        //Sprite when attack
         if (attack){
             attackSprite++;
             if (attackSprite>5){
@@ -92,6 +94,17 @@ public class Player extends SolidEntity implements DeathAnimation {
                 }
                 attackSprite=0;
             }
+        }
+        //Sprite when invincible
+        if (invincible){
+            invincibleCounter++;
+            if (invincibleCounter >60) {
+                invincible = false;
+                invincibleCounter =0;
+            }
+        }
+        if(life<=0){
+            updateDeath();
         }
     }
 
@@ -140,11 +153,25 @@ public class Player extends SolidEntity implements DeathAnimation {
 
     @Override
     public void updateDeath() {
-
+        deathSprite++;
+        if (deathSprite>20){
+            if (numDeath>2){
+                numDeath=0;
+                alive=false;
+            }
+            numDeath++;
+            deathSprite=0;
+        }
     }
 
     @Override
     public void drawDeath(Graphics2D g2) {
-
+        image=deathSprites[numDeath];
+        if (deathSprite>10){
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.2f));
+        }
+        else{
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
+        }
     }
 }

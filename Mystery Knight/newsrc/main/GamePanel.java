@@ -85,8 +85,12 @@ public class GamePanel extends JPanel implements Runnable {
             keyH.controlPlayer();
             gs.player.update();
             //monster
-            for (SolidEntity entity : gs.monster) {
-                entity.update();
+            for (int i = 0; i < gs.npc.size(); i++) {
+                if (gs.npc.get(i).alive) {
+                    gs.npc.get(i).update();
+                } else {
+                    gs.npc.remove(i);
+                }
             }
             for (int i = 0; i < gs.projectile.size(); i++) {
                 if (gs.projectile.get(i).alive) {

@@ -17,6 +17,7 @@ public class SolidEntity extends Entity{
     public int frameCount;
     public String direction;
     public boolean collisionOn;
+    public boolean invincible=false;
     public SolidEntity(GameSetting gs) {
         super(gs);
         this.gs=gs;

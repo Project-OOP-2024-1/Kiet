@@ -38,6 +38,37 @@ public class Projectile extends SolidEntity {
     }
 
     @Override
+    public void update() {
+        collisionOn=false;
+        gs.collisionChecker.checkTile(this);
+        if(isPlayer){
+            gs.collisionChecker.checkEntity(this,gs.npc);
+        }
+        else {
+            gs.collisionChecker.checkPlayer(this);
+        }
+        if (!collisionOn) {
+            if (direction.equals("up")) y -= speed;
+            if (direction.equals("down") || direction.equals(("idle"))) y += speed;
+            if (direction.equals("left")) x -= speed;
+            if (direction.equals("right")) x += speed;
+            life--;
+        }
+        else {
+            life=0;
+        }
+        if (life <= 0) alive = false;
+        counterSprite++;
+        if (counterSprite > 15) {
+            numSprite++;
+            if (numSprite>frameCount-1){
+                numSprite=1;
+            }
+            counterSprite=0;
+        }
+    }
+
+    @Override
     protected void getImage(String name, int width, int height) {
         SpriteSheet sheet = new SpriteSheet("/objects/"+name+".png", width, height);
 
