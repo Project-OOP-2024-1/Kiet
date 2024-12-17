@@ -30,14 +30,14 @@ public class GameSetting {
     public Player player;
     public CollisionChecker collisionChecker;
     public ArrayList<SolidEntity> monster;
-    public ArrayList<SolidEntity> projectile;
+    public ArrayList<SolidEntity> projectileList;
     public GameSetting(){
         keyH = new KeyHandler(this);
-        player= new Player(this,keyH,14*tileSize,12*tileSize);
+        player = new Player(this,keyH,14*tileSize,12*tileSize);
         collisionChecker = new CollisionChecker(this);
-        tileM=new TileManager(this);
-        monster=new ArrayList<>();
-        projectile=new ArrayList<>();
+        tileM = new TileManager(this);
+        monster = new ArrayList<>();
+        projectileList = new ArrayList<>();
     }
     public void Setting(){
         setNPC("GirlMagician",6,14,15,120,120,3,2,false);

@@ -56,7 +56,6 @@ public class Projectile extends SolidEntity {
         }
     }
 
-
     @Override
     public void draw(Graphics2D g2) {
         super.draw(g2);

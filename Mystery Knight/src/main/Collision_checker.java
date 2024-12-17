@@ -167,7 +167,7 @@ public class Collision_checker {
     }
     // for monster
     public void checkDanger(Monster entity){
-        Player t =gp.player;
+        Player t = gp.player;
         int default_e_x=entity.Attackregion.x;
         int default_e_y=entity.Attackregion.y;
         int default_t_x=t.solidregion.x;

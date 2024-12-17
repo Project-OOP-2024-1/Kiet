@@ -56,96 +56,141 @@ public class NPC extends SolidEntity implements DeathAnimation {
         }
     }
 
-    public void attackByProjectile(){
-        if(defaultX==0 && defaultY==0){
-            defaultX=x;
-            defaultY=y;
+    public void attackByProjectile() {
+        if (defaultX == 0 && defaultY == 0) {
+            defaultX = x;
+            defaultY = y;
         }
-        if (attack && !collisionOn){
-            if (Math.abs(gs.player.x-x) < Math.abs(gs.player.y-y)){
-                if (Math.abs(gs.player.x-x)>48) {
+    
+        int distanceX = Math.abs(gs.player.x - x);
+        int distanceY = Math.abs(gs.player.y - y);
+        
+        // Aggro range
+        if (distanceX <= 64 && distanceY <= 64) {
+            attack = true;
+        } else {
+            attack = false;
+        }
+
+        // If attacking
+        if (attack && !collisionOn) {
+            // Stand still and shoot
+            if (distanceX <= 48 && distanceY <= 48) {
+                if (!projectile.alive) {
+                    projectile.set(x, y, direction, alive, false, speed);
+                    gs.projectileList.add(projectile);
+                }
+                direction = "idle";
+            } 
+            else if (distanceX < distanceY) {
+                if (distanceX > 16) {
                     if (gs.player.x - x > 0) {
                         direction = "right";
-                    } else if (gs.player.x - x < 0) {
+                    } else {
                         direction = "left";
                     }
+                } else {
+                    // Small chance to move
+                    Random ran = new Random();
+                    int prob = ran.nextInt(7);
+
+                    if (prob == 1) {
+                        int directionChoice = ran.nextInt(4);
+                        switch (directionChoice) {
+                            case 0:
+                                direction = "up";
+                                break;
+                            case 1:
+                                direction = "down";
+                                break;
+                            case 2:
+                                direction = "left";
+                                break;
+                            case 3:
+                                direction = "right";
+                                break;
+                        }
+                    } 
                 }
-                else{
-                    if (!projectile.alive){
-                        projectile.set(x,y,direction,alive,false,speed);
-                        gs.projectileList.add(projectile);
-                    }
-                    if (gs.player.y>y){
-                        direction="down";
-                    }
-                    else {
-                        direction="up";
-                    }
-                }
-            }
-            else{
-                if(Math.abs(gs.player.y-y)>48) {
-                    if (gs.player.y > y) {
-                        direction = "down";
-                    } else if (gs.player.y < y) {
-                        direction = "up";
-                    }
-                }
-                else {
-                    if (!projectile.alive){
-                        projectile.set(x,y,direction,alive,false,speed);
-                        gs.projectileList.add(projectile);
-                    }
-                    if (gs.player.x>x){
-                        direction="right";
-                    }
-                    else {
-                        direction="left";
-                    }
-                }
-            }
-        }
-        else{
-            if (Math.abs(defaultX-x) < Math.abs(defaultY-y)){
-                if (Math.abs(defaultX-x)>48) {
-                    if (defaultX - x > 0) {
-                        direction = "right";
-                    } else  {
-                        direction = "left";
-                    }
-                }
-                else{
-                    if (defaultY>y){
-                        direction="down";
-                    }
-                    else {
-                        direction="up";
-                    }
-                }
-            }
-            else{
-                if(defaultY-y>24) {
-                    if (defaultY> y) {
+            } else {
+                if (distanceY > 16) {
+                    if (gs.player.y - y > 0) {
                         direction = "down";
                     } else {
                         direction = "up";
                     }
-                }
-                else {
-                    if (x<defaultX-gs.tileSize*3){
-                        direction="right";
-                    }
-                    else if(x>defaultX+gs.tileSize*3){
-                        direction="left";
-                    }
-                    else {
-                        Random ran = new Random();
-                        int num= ran.nextInt(3);
-                        switch (num){
-                            case 0: direction="right";break;
-                            case 1: direction="idle"; break;
-                            case 2: direction="left"; break;
+                } else {
+                    Random ran = new Random();
+                    int prob = ran.nextInt(7);
+
+                    if (prob == 1) {
+                        int directionChoice = ran.nextInt(4);
+                        switch (directionChoice) {
+                            case 0:
+                                direction = "up";
+                                break;
+                            case 1:
+                                direction = "down";
+                                break;
+                            case 2:
+                                direction = "left";
+                                break;
+                            case 3:
+                                direction = "right";
+                                break;
                         }
+                    } 
+                }
+            }
+        } 
+        else {
+            // Return to default
+            if (Math.abs(defaultX - x) > Math.abs(defaultY - y)) {
+                if (Math.abs(defaultX - x) > 48) {
+                    if (defaultX - x > 0) {
+                        direction = "right";
+                    } else {
+                        direction = "left";
+                    }
+                } 
+                else {
+                    // Random if close to default
+                    Random ran = new Random();
+                    int num = ran.nextInt(3);
+                    switch (num) {
+                        case 0:
+                            direction = "right";
+                            break;
+                        case 1:
+                            direction = "idle";
+                            break;
+                        case 2:
+                            direction = "left";
+                            break;
+                    }
+                }
+            } 
+            else {
+                if (Math.abs(defaultY - y) > 48) {
+                    if (defaultY - y > 0) {
+                        direction = "down";
+                    } else {
+                        direction = "up";
+                    }
+                } 
+                else {
+                    Random ran = new Random();
+                    int num = ran.nextInt(3);
+                    switch (num) {
+                        case 0:
+                            direction = "right";
+                            break;
+                        case 1:
+                            direction = "idle";
+                            break;
+                        case 2:
+                            direction = "left";
+                            break;
                     }
                 }
             }
