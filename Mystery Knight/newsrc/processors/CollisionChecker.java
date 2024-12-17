@@ -171,7 +171,10 @@ public class CollisionChecker {
             e.solidArea.x = e.x;
             e.solidArea.y = e.y;
             if (e.solidArea.intersects(t.solidArea)) {
-                e.update();
+                e.eventOn=true;
+            }
+            else {
+                e.eventOn=false;
             }
             // return origin
             t.solidArea.x = defaultX;

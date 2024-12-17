@@ -1,6 +1,7 @@
 package main;
 
 import entity.SolidEntity;
+import objects.SuperObject;
 import processors.CollisionChecker;
 import processors.KeyHandler;
 
@@ -84,7 +85,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private void update() {
+        ArrayList<Integer> delete=new ArrayList<>();
         if (gameState==playState) {
+            gs.heart.update();
             keyH.controlPlayer();
             collisionChecker.controlCollision();
             gs.player.update();
@@ -93,16 +96,25 @@ public class GamePanel extends JPanel implements Runnable {
                 if (gs.npc.get(i).alive) {
                     gs.npc.get(i).update();
                 } else {
-                    gs.npc.remove(i);
+                    delete.add(i);
                 }
             }
+            for (int j:delete){
+                gs.npc.remove(j);
+            }
+            delete.clear();
             for (int i = 0; i < gs.projectile.size(); i++) {
                 if (gs.projectile.get(i).alive) {
                     gs.projectile.get(i).update();
                 } else {
-                    gs.projectile.remove(i);
+                    delete.add(i);
                 }
             }
+            for (int j:delete){
+                gs.projectile.remove(j);
+            }
+            delete.clear();
+            ui.update();
         }
     }
 
@@ -112,6 +124,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
         else{
             gs.tileM.draw(g2);
+            gs.heart.draw(g2);
             ArrayList<SolidEntity> draw =gs.orderDraw();
             for (SolidEntity entity:draw){
                 entity.draw(g2);

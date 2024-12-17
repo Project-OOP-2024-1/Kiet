@@ -45,7 +45,7 @@ public class NPC extends SolidEntity implements DeathAnimation {
             }
         }
         else {
-            System.out.println(life);
+            //
         }
     }
     public void attackByProjectile(){
@@ -61,7 +61,6 @@ public class NPC extends SolidEntity implements DeathAnimation {
             setAction();
             counterNPC=0;
         }
-        //consider
         if(!collisionOn){
             switch (direction){
                 case "up":  y -= speed;break;

@@ -14,6 +14,7 @@ public class SuperObject extends SolidEntity {
     private final int scale;
     private final int width;
     private final int height;
+    public boolean eventOn=false;
     public SuperObject(GameSetting gs,String name,int x,int y,int width,int height,int scale) {
         super(gs);
         this.gs=gs;
@@ -25,31 +26,42 @@ public class SuperObject extends SolidEntity {
         this.height=height;
         solidArea= new Rectangle(0,0,width*3*scale,height*3*scale);
         getImage(this.name,width,height);
-        alive=true;
+        alive=false;
     }
 
     @Override
     protected void getImage(String name, int width, int height) {
         SpriteSheet sheet = new SpriteSheet("/objects/"+name+".png",width,height);
         image=sheet.getSprite(0,0);
-        inactive=sheet.getSprite(1,0);
-        active=sheet.getSprite(2,0);
+        try {
+            inactive=sheet.getSprite(1,0);
+            active=sheet.getSprite(2,0);
+        }catch (Exception e){
+            inactive=sheet.getSprite(0,0);
+            active=sheet.getSprite(0,0);
+        }
+
     }
 
     public void update(){
         if (this.name.equals("HealingPool")){
             //fill this
         } else if (this.name.equals("TransitionGate")) {
-            //fill this
-            System.out.println("You are in Gate");
+            if(alive){
+                gs.player.x=24*gs.tileSize;
+                gs.player.y=44*gs.tileSize;
+            }
         }
         else if (this.name.equals("Mushroom")){
             //fill
+
+
         }
     }
 
     @Override
     public void draw(Graphics2D g2) {
+        if(alive) image=active;
         int screenX = x - gs.player.x + gs.player.screenX;
         int screenY = y - gs.player.y + gs.player.screenY;
         if (x + width*3*scale > gs.player.x - gs.player.screenX &&

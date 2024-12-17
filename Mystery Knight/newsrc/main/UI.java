@@ -1,5 +1,7 @@
 package main;
 
+import objects.SuperObject;
+
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -368,5 +370,33 @@ public class UI {
     private int getXForAlignToRightText(String text, int tailX) {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
         return tailX - length;
+    }
+
+    private void addMessage(String text){
+        message.add(text);
+        messCount.add(0);
+    }
+    //This uses for update message
+    public void update(){
+        for (SuperObject event:gs.event){
+            if(event.eventOn){
+                event.update();
+                if (event.name.equals("TransitionGate")){
+                    if(event.alive){
+                        addMessage("Transition successfully!");
+                    }
+                    else {
+                        event.counterSprite++;
+                        if(event.counterSprite>90){
+                            addMessage("You need a fragment!");
+                            event.counterSprite=0;
+                        }
+                    }
+                }
+                if(event.name.equals("Mushroom")){
+
+                }
+            }
+        }
     }
 }

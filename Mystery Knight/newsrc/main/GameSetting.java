@@ -4,6 +4,7 @@ import characters.NPC;
 import characters.Player;
 import characters.Projectile;
 import entity.SolidEntity;
+import objects.Heart;
 import objects.SuperObject;
 import tiles.TileManager;
 
@@ -30,18 +31,21 @@ public class GameSetting {
     public ArrayList<NPC> npc;
     public ArrayList<Projectile> projectile;
     public ArrayList<SuperObject> event;
+    public Heart heart;
     public GameSetting(){
         player= new Player(this,14*tileSize,12*tileSize);
         tileM=new TileManager(this);
         npc=new ArrayList<>();
         event=new ArrayList<>();
         projectile=new ArrayList<>();
+        heart=new Heart(this);
     }
     public void Setting(){
         setNPC("GirlMagician",6,14,15,180,180,2,2,false);
         setNPC("Slime",8,16,17,16,16,1,3,true);
         setEvent("TransitionGate",16,24,16,32,2);
         setEvent("HealingPool",15,22,16,16,1);
+        setEvent("Mushroom",15,20,16,16,1);
     }
     private void setNPC(String name,int maxLife, int x, int y, int width, int height, int scale,int speed, boolean isMonster){
         npc.add(new NPC(this,name,maxLife, x, y, width, height,  scale,speed, isMonster));
