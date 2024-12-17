@@ -1,7 +1,8 @@
 package main;
 
 import entity.SolidEntity;
-import processor.KeyHandler;
+import processors.CollisionChecker;
+import processors.KeyHandler;
 
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ public class GamePanel extends JPanel implements Runnable {
     BufferedImage tempScreen;
     Graphics2D g2;
     KeyHandler keyH;
+    CollisionChecker collisionChecker;
     public UI ui;
     //GameState
     public int gameState;
@@ -29,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
         gs=new GameSetting();
         ui=new UI(this,gs);
         keyH=new KeyHandler(gs,this);
+        collisionChecker=new CollisionChecker(gs,this);
         this.setPreferredSize(new Dimension(gs.screenWidth, gs.screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -83,6 +86,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void update() {
         if (gameState==playState) {
             keyH.controlPlayer();
+            collisionChecker.controlCollision();
             gs.player.update();
             //monster
             for (int i = 0; i < gs.npc.size(); i++) {

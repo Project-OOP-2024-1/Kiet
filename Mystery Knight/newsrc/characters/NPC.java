@@ -18,7 +18,7 @@ public class NPC extends SolidEntity implements DeathAnimation {
         super(gs);
         this.gs=gs;
         this.name=name;
-        this.x=x* gs.tileSize;
+        this.x=x*gs.tileSize;
         this.y=y*gs.tileSize;
         this.isMonster=isMonster;
         this.speed=speed;
@@ -61,10 +61,7 @@ public class NPC extends SolidEntity implements DeathAnimation {
             setAction();
             counterNPC=0;
         }
-        collisionOn=false;
-        gs.collisionChecker.checkTile(this);
-        gs.collisionChecker.checkPlayer(this);
-        if(isMonster) gs.collisionChecker.Damaged(this);
+        //consider
         if(!collisionOn){
             switch (direction){
                 case "up":  y -= speed;break;

@@ -1,7 +1,7 @@
 package tiles;
 
 import main.GameSetting;
-import processor.SpriteSheet;
+import processors.SpriteSheet;
 
 import java.awt.*;
 import java.io.BufferedReader;

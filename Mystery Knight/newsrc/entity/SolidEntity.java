@@ -1,7 +1,7 @@
 package entity;
 
 import main.GameSetting;
-import processor.SpriteSheet;
+import processors.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -42,8 +42,6 @@ public class SolidEntity extends Entity{
         }
     }
     public void update(){
-        collisionOn=false;
-        gs.collisionChecker.checkTile(this);
         if (!collisionOn) {
             if (direction.equals("up")) y -= speed;
             if (direction.equals("down") || direction.equals(("idle"))) y += speed;

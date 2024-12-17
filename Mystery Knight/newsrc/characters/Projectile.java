@@ -2,7 +2,7 @@ package characters;
 
 import entity.SolidEntity;
 import main.GameSetting;
-import processor.SpriteSheet;
+import processors.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -39,14 +39,6 @@ public class Projectile extends SolidEntity {
 
     @Override
     public void update() {
-        collisionOn=false;
-        gs.collisionChecker.checkTile(this);
-        if(isPlayer){
-            gs.collisionChecker.checkEntity(this,gs.npc);
-        }
-        else {
-            gs.collisionChecker.checkPlayer(this);
-        }
         if (!collisionOn) {
             if (direction.equals("up")) y -= speed;
             if (direction.equals("down") || direction.equals(("idle"))) y += speed;

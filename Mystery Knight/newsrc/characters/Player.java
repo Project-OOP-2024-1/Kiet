@@ -4,7 +4,7 @@ import entity.DeathAnimation;
 import entity.SolidEntity;
 import main.GameSetting;
 import objects.Object;
-import processor.SpriteSheet;
+import processors.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -65,9 +65,6 @@ public class Player extends SolidEntity implements DeathAnimation {
 
     @Override
     public void update() {
-        collisionOn=false;
-        gs.collisionChecker.checkTile(this);
-        gs.collisionChecker.checkEntity(this,gs.npc);
         if(!collisionOn && !attack){
             switch (direction){
                 case "up":  y -= speed;break;

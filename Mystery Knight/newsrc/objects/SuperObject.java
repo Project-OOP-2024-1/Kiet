@@ -2,7 +2,7 @@ package objects;
 
 import entity.SolidEntity;
 import main.GameSetting;
-import processor.SpriteSheet;
+import processors.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -11,20 +11,26 @@ public class SuperObject extends SolidEntity {
     //SuperObject is object that have functional work(like event)
     BufferedImage inactive, active;
     public Rectangle solidArea;
-    private boolean collision;
-    public SuperObject(GameSetting gs,String name,int width,int height,boolean collision) {
+    private final int scale;
+    private final int width;
+    private final int height;
+    public SuperObject(GameSetting gs,String name,int x,int y,int width,int height,int scale) {
         super(gs);
         this.gs=gs;
         this.name=name;
-        this.collision=collision;
-        solidArea= new Rectangle(0,0,width,height);
+        this.x=x*gs.tileSize;
+        this.y=y*gs.tileSize;
+        this.scale=scale;
+        this.width=width;
+        this.height=height;
+        solidArea= new Rectangle(0,0,width*3*scale,height*3*scale);
         getImage(this.name,width,height);
         alive=true;
     }
 
     @Override
     protected void getImage(String name, int width, int height) {
-        SpriteSheet sheet = new SpriteSheet("objects/"+name+".png",width,height);
+        SpriteSheet sheet = new SpriteSheet("/objects/"+name+".png",width,height);
         image=sheet.getSprite(0,0);
         inactive=sheet.getSprite(1,0);
         active=sheet.getSprite(2,0);
@@ -35,11 +41,22 @@ public class SuperObject extends SolidEntity {
             //fill this
         } else if (this.name.equals("TransitionGate")) {
             //fill this
+            System.out.println("You are in Gate");
+        }
+        else if (this.name.equals("Mushroom")){
+            //fill
         }
     }
 
     @Override
     public void draw(Graphics2D g2) {
-
+        int screenX = x - gs.player.x + gs.player.screenX;
+        int screenY = y - gs.player.y + gs.player.screenY;
+        if (x + width*3*scale > gs.player.x - gs.player.screenX &&
+                x - width*3*scale < gs.player.x + gs.player.screenX &&
+                y + height*3*scale > gs.player.y - gs.player.screenY &&
+                y - height*3*scale < gs.player.y + gs.player.screenY) {
+            g2.drawImage(image, screenX, screenY,width*scale*3,height*scale*3 , null);
+        }
     }
 }

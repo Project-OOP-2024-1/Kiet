@@ -1,7 +1,7 @@
 package entity;
 
 import main.GameSetting;
-import processor.SpriteSheet;
+import processors.SpriteSheet;
 
 import java.awt.image.BufferedImage;
 

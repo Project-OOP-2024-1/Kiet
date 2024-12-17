@@ -17,9 +17,12 @@ public class UI {
     public int slotRow=0;
     public int titleScreenState=0;
     public int commandNum=0;
+    public int messageCounter = 1;
+    private int scenarioState=0;
     private String currentDialogue;
     private final ArrayList<String> message;
     private final ArrayList<Integer> messCount;
+    public boolean messageOn=false;
     public UI(GamePanel gp,GameSetting gs){
         this.gs=gs;
         this.gp=gp;
@@ -192,6 +195,29 @@ public class UI {
     }
 
     private void setContent() {
+        if (scenarioState==0){
+            switch (messageCounter){
+                case 1: currentDialogue="Old village:\nGood morning Young Knight!";break;
+                case 2: currentDialogue="Knight:\nYeah,Good morning!";break;
+                case 3: currentDialogue="Knight:\nWhat is happening?\nWhere are everybody?";break;
+                case 4: currentDialogue="Old village:\nSome of they have luckily escaped, others \nare killed by that monster.....";break;
+                case 5: currentDialogue="Knight:\nHuh...";break;
+                case 6: currentDialogue="Knight:\nThey are killed.....";break;
+                case 7: currentDialogue="Knight:\nWhere....where..is..that monster???";break;
+                case 8: currentDialogue="Knight:\nGru....h.h!";break;
+                case 9: currentDialogue="Old village:\nYour power now is not sufficient.You may\n be killed";break;
+                case 10:currentDialogue="Old village:\nHold on!";break;
+                case 11:currentDialogue="Knight:\nWhy are you still here?. Why don't you \nfollow to other people?";break;
+                case 12:currentDialogue="Old village:\nI am a wizard.\nI know you will come here!";break;
+                case 13:currentDialogue="Old village:\nYou are strong but not enough..";break;
+                case 14:currentDialogue="Old village:\nDon't worry..I will teach you a special\n skill!";break;
+                case 15:currentDialogue="Old village:\nYou move to South and you will see slimes\n and shits";break;
+                case 16:currentDialogue="Old village:\nKill them and give me the reward!";break;
+                case 17:currentDialogue="                     Mission unlock!\nGather 3 slime hear and 2 stone";break;
+                case 18:messageCounter=0;scenarioState=1;gp.gameState= gp.playState;break;
+            }
+        }
+
     }
 
     private void drawPauseScreen() {

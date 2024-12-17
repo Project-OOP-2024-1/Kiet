@@ -1,4 +1,4 @@
-package processor;
+package processors;
 
 import entity.Entity;
 import main.GamePanel;
@@ -172,6 +172,11 @@ public class KeyHandler implements KeyListener {
                 }
             }
         }
+        else if(gp.gameState==gp.dialogueState){
+            if(isPressed(10)){
+                gp.ui.messageCounter++;
+            }
+        }
 
     }
     public void controlPlayer(){
@@ -186,6 +191,9 @@ public class KeyHandler implements KeyListener {
             gs.player.projectile.set(gs.player.x,gs.player.y,gs.player.direction,true,true,8);
             //add to list
             gs.projectile.add(gs.player.projectile);
+        }
+        if (gp.ui.messageOn && isPressed(10)){
+            gp.gameState=gp.dialogueState;
         }
     }
 

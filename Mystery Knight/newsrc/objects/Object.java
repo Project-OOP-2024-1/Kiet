@@ -2,7 +2,7 @@ package objects;
 
 import entity.Entity;
 import main.GameSetting;
-import processor.SpriteSheet;
+import processors.SpriteSheet;
 
 public class Object extends Entity {
     //Object in this is used for inventory and active skill
