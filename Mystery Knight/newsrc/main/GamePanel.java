@@ -1,7 +1,8 @@
 package main;
 
 import entity.SolidEntity;
-import objects.SuperObject;
+import objects.Mushroom;
+import objects.Reward;
 import processors.CollisionChecker;
 import processors.KeyHandler;
 
@@ -33,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
         ui=new UI(this,gs);
         keyH=new KeyHandler(gs,this);
         collisionChecker=new CollisionChecker(gs,this);
+        //Setting Screen and Processor
         this.setPreferredSize(new Dimension(gs.screenWidth, gs.screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
@@ -97,8 +99,13 @@ public class GamePanel extends JPanel implements Runnable {
                     gs.npc.get(i).update();
                 } else {
                     delete.add(i);
+                    System.out.println(delete.size());
+                    ui.addMessage("You just kill "+gs.npc.get(i).name+"!");
+                    ui.addMessage("Get reward!");
+                    gs.player.inventory.add(new Reward(gs,gs.npc.get(i).name,16,16));
                 }
             }
+            delete.sort(((o1, o2) -> Integer.compare(o2,o1)));
             for (int j:delete){
                 gs.npc.remove(j);
             }
@@ -110,11 +117,15 @@ public class GamePanel extends JPanel implements Runnable {
                     delete.add(i);
                 }
             }
+            delete.sort(((o1, o2) -> Integer.compare(o2,o1)));
             for (int j:delete){
                 gs.projectile.remove(j);
             }
             delete.clear();
             ui.update();
+        }
+        else if(gameState==dialogueState){
+            //fix
         }
     }
 

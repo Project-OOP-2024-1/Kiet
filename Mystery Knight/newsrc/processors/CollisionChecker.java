@@ -100,7 +100,6 @@ public class CollisionChecker {
                         if (!t.invincible){
                             t.life--;
                             t.invincible=true;
-                            System.out.println("Yes, I var npc");
                         }
                     }
                 }
@@ -134,7 +133,6 @@ public class CollisionChecker {
         if(entity.solidArea.intersects(t.solidArea)) {
             entity.collisionOn=true;
             if (entity instanceof Projectile){
-                System.out.println("Yes,I var player");
                 t.life--;
             }
         }
@@ -172,6 +170,7 @@ public class CollisionChecker {
             e.solidArea.y = e.y;
             if (e.solidArea.intersects(t.solidArea)) {
                 e.eventOn=true;
+                e.update();
             }
             else {
                 e.eventOn=false;

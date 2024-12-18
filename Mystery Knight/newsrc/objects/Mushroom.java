@@ -7,5 +7,6 @@ public class Mushroom extends Object{
         super(gs, width, height);
         name="Mushroom";
         description="[" + name + "]\nImportant ingredient for medical";
+        getImage(name,width,height);
     }
 }

@@ -45,17 +45,13 @@ public class SuperObject extends SolidEntity {
 
     public void update(){
         if (this.name.equals("HealingPool")){
+            if (gs.player.life<gs.player.maxLife) gs.player.life++;
             //fill this
         } else if (this.name.equals("TransitionGate")) {
             if(alive){
                 gs.player.x=24*gs.tileSize;
                 gs.player.y=44*gs.tileSize;
             }
-        }
-        else if (this.name.equals("Mushroom")){
-            //fill
-
-
         }
     }
 

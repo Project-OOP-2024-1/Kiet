@@ -14,7 +14,7 @@ public class Object extends Entity {
 
     @Override
     protected void getImage(String name, int width, int height) {
-        SpriteSheet sheet = new SpriteSheet("objects/"+name+".png", width, height);
+        SpriteSheet sheet = new SpriteSheet("/objects/"+name+".png", width, height);
         image= sheet.getSprite(0, 0);
     }
 }

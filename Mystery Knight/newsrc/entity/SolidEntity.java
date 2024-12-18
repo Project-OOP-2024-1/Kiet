@@ -57,7 +57,7 @@ public class SolidEntity extends Entity{
         if (counterSprite > 15) {
             numSprite++;
             if (numSprite>frameCount-1){
-                numSprite=1;
+                numSprite=0;
             }
             counterSprite=0;
         }
@@ -76,14 +76,11 @@ public class SolidEntity extends Entity{
                 case "left":
                     image = leftSprites[numSprite];
                     break;
-                case "down":
+                case "down", "idle":
                     image = downSprites[numSprite];
                     break;
                 case "up":
                     image = upSprites[numSprite];
-                    break;
-                case "idle":
-                    image = downSprites[numSprite];
                     break;
             }
             g2.drawImage(image, screenX, screenY, gs.tileSize, gs.tileSize, null);

@@ -21,7 +21,7 @@ public class Soul extends Projectile {
         getImage();
     }
     public void getImage() {
-        SpriteSheet sheet = new SpriteSheet("/objects/Flame.png", 30, 30);
+        SpriteSheet sheet = new SpriteSheet("/objects/GhostBall.png", 30, 30);
 
         rightSprites = new BufferedImage[3];
         leftSprites = new BufferedImage[3];

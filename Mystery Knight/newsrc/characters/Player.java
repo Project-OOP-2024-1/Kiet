@@ -37,7 +37,7 @@ public class Player extends SolidEntity implements DeathAnimation {
         screenX = gs.screenWidth/2 - (gs.tileSize/2);
         screenY = gs.screenHeight/2 - (gs.tileSize/2);
         attack=false;
-        projectile=new Projectile(gs,"FireBall",gs.originalTileSize,gs.originalTileSize,3,80);
+        projectile=new Projectile(gs,name,gs.originalTileSize,gs.originalTileSize,3,80);
         getImage(name,gs.originalTileSize,gs.originalTileSize);
     }
 

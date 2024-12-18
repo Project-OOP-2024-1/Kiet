@@ -11,9 +11,12 @@ public class NPC extends SolidEntity implements DeathAnimation {
     public boolean isMonster;//attribute use to determine whether monster or not
     public int counterNPC=0; //Control the action of npc
     public int scale;
+    public boolean attack=false;
     private int deathSprite=0;
     private int numDeath=0;
     private int invincibleCounter =0;
+    private int defaultX=0,defaultY=0;
+    private Projectile projectile=new Projectile(gs,"Nothing",1,1,3,80);
     public NPC(GameSetting gs, String name,int maxLife, int x, int y, int width, int height, int scale,int speed, boolean isMonster) {
         super(gs);
         this.gs=gs;
@@ -26,7 +29,13 @@ public class NPC extends SolidEntity implements DeathAnimation {
         alive=true;
         direction="idle";
         frameCount=4;
-        if (name.equals("Ghost")) frameCount = 5;
+        if (name.equals("Ghost")) {
+            frameCount = 5;
+            projectile= new Projectile(gs,name,30,30,3,80);
+        }
+        if(name.equals("Slime")){
+            projectile= new Projectile(gs,name,16,16,3,80);
+        }
         this.maxLife=maxLife;
         life=maxLife;
         solidArea=new Rectangle(10*scale,20*scale,28*scale,28*scale);//set solidArea for collisionChecker
@@ -46,21 +55,169 @@ public class NPC extends SolidEntity implements DeathAnimation {
         }
         else {
             //
+            if (name.equals("Slime") || name.equals("Ghost")) {
+                attackByProjectile();
+            }
+            if (name.equals("Shit")) {
+                attackByHand();
+            }
         }
     }
-    public void attackByProjectile(){
-        //do this
+    //method attack
+    public void attackByProjectile() {
+        if (defaultX == 0 && defaultY == 0) {
+            defaultX = x;
+            defaultY = y;
+        }
+        Random ran = new Random();
+        int choice = ran.nextInt(2);
+        //calculate range Attack for monster
+        int distanceX = gs.player.x - x;
+        int distanceY = gs.player.y - y;
+        double distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        // setAction  for every distance
+        if (distance < gs.tileSize * 3) {
+            //locate Player in 4 direction
+            if (!gs.player.projectile.alive){
+                //set default
+                gs.player.projectile.set(x,y,direction,true,false,6);
+                //add to list
+                gs.projectile.add(gs.player.projectile);
+            }
+            if (distanceX > 0 && distanceY > 0) {//SouthEast
+                switch (choice) {
+                    case 0:
+                        direction = "down";
+                        break;
+                    case 1:
+                        direction = "right";
+                        break;
+                }
+            }
+            if (distanceX < 0 && distanceY > 0) {//SouthWest
+                switch (choice) {
+                    case 0:
+                        direction = "down";
+                        break;
+                    case 1:
+                        direction = "left";
+                        break;
+                }
+            }
+            if (distanceX > 0 && distanceY < 0) {//NorthEast
+                switch (choice) {
+                    case 0:
+                        direction = "up";
+                        break;
+                    case 1:
+                        direction = "right";
+                        break;
+                }
+            }
+            if (distanceX < 0 && distanceY < 0) {//NorthWest
+                switch (choice) {
+                    case 0:
+                        direction = "up";
+                        break;
+                    case 1:
+                        direction = "left";
+                        break;
+                }
+            }
+        } else {
+
+        }
     }
     public void attackByHand(){
         //do this
+        if(defaultX==0 && defaultY==0){
+            defaultX=x;
+            defaultY=y;
+        }
+        if (attack && !collisionOn){
+            if (Math.abs(gs.player.x-x) < Math.abs(gs.player.y-y)){
+                if (Math.abs(gs.player.x-x)>48) {
+                    if (gs.player.x - x > 0) {
+                        direction = "right";
+                    } else if (gs.player.x - x < 0) {
+                        direction = "left";
+                    }
+                }
+                else{
+                    if (gs.player.y>y){
+                        direction="down";
+                    }
+                    else {
+                        direction="up";
+                    }
+                }
+            }
+            else {
+                if(Math.abs(gs.player.y-y)>48) {
+                    if (gs.player.y > y) {
+                        direction = "down";
+                    } else if (gs.player.y < y) {
+                        direction = "up";
+                    }
+                }
+                else {
+                    if (gs.player.x>x){
+                        direction="right";
+                    }
+                    else {
+                        direction="left";
+                    }
+                }
+            }
+        }
+        else{
+            if (Math.abs(defaultX-x) < Math.abs(defaultY-y)){
+                if (Math.abs(defaultX-x)>48) {
+                    if (defaultX - x > 0) {
+                        direction = "right";
+                    } else  {
+                        direction = "left";
+                    }
+                }
+                else{
+                    if (defaultY>y){
+                        direction="down";
+                    }
+                    else {
+                        direction="up";
+                    }
+                }
+            }
+            else{
+                if(defaultY-y>24) {
+                    if (defaultY> y) {
+                        direction = "down";
+                    } else {
+                        direction = "up";
+                    }
+                }
+                else {
+                    if (x<defaultX-gs.tileSize*3){
+                        direction="right";
+                    }
+                    else if(x>defaultX+gs.tileSize*3){
+                        direction="left";
+                    }
+                    else {
+                        Random ran = new Random();
+                        int num= ran.nextInt(3);
+                        switch (num){
+                            case 0: direction="right";break;
+                            case 1: direction="idle"; break;
+                            case 2: direction="left"; break;
+                        }
+                    }
+                }
+            }
+        }
     }
     @Override
     public void update() {
-        counterNPC++;
-        if (counterNPC>25){
-            setAction();
-            counterNPC=0;
-        }
         if(!collisionOn){
             switch (direction){
                 case "up":  y -= speed;break;
@@ -86,7 +243,12 @@ public class NPC extends SolidEntity implements DeathAnimation {
         if(life<=0){
             updateDeath();
         }
-
+        //Giving action for npc
+        counterNPC++;
+        if (counterNPC>25){
+            setAction();
+            counterNPC=0;
+        }
     }
     public void draw(Graphics2D g2) {
         int screenX = x - gs.player.x + gs.player.screenX;
@@ -111,9 +273,9 @@ public class NPC extends SolidEntity implements DeathAnimation {
         //Hp monster
         if(isMonster){
             g2.setColor(new Color(35,35,35));
-            g2.fillRect(screenX-6*scale,screenY-16*scale,maxLife*8*scale,10);
+            g2.fillRect(screenX-(maxLife*8*scale-48)/2,screenY-16*scale,maxLife*8*scale,10);
             g2.setColor(new Color(255,0,30));
-            g2.fillRect(screenX-6*scale,screenY-16*scale, life*8*scale,10);
+            g2.fillRect(screenX-(maxLife*8*scale-48)/2,screenY-16*scale, life*8*scale,10);
         }
         if (invincible){
             if (invincibleCounter<20) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.2f));

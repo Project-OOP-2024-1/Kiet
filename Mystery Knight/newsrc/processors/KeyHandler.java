@@ -1,8 +1,8 @@
 package processors;
 
-import entity.Entity;
 import main.GamePanel;
 import main.GameSetting;
+import objects.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,7 +12,6 @@ public class KeyHandler implements KeyListener {
     private final HashMap<Integer, Boolean> Key_Set;
     GameSetting gs;
     GamePanel gp;
-    Entity object;
     public KeyHandler(GameSetting gs,GamePanel gp){
         this.gs = gs;
         this.gp=gp;
@@ -27,7 +26,7 @@ public class KeyHandler implements KeyListener {
         Key_Set.put(KeyEvent.VK_K,false);//"shot"
         Key_Set.put(KeyEvent.VK_L,false);//"attack"
         Key_Set.put(KeyEvent.VK_C,false);//"Character"
-        Key_Set.put(KeyEvent.VK_ENTER,false);//for dialog and tilte screen
+        Key_Set.put(KeyEvent.VK_ENTER,false);//for dialog and title screen
     }
     /**
      * Invoked when a key has been typed.
@@ -38,7 +37,6 @@ public class KeyHandler implements KeyListener {
      */
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     /**
@@ -132,15 +130,29 @@ public class KeyHandler implements KeyListener {
             }
         }
         else if (gp.gameState==gp.playState) {
+            ArrayList<Integer> delete= new ArrayList<>();//thao tac xoa
             if (isPressed(80)){
                 gp.gameState=gp.pauseState;
             }
             if (isPressed(67)){
                 gp.gameState=gp.characterState;
             }
-//                else if (gp.gameState==gp.pauseState){
-//                    gp.gameState=gp.playState;
-//                }
+            if (gp.ui.messageOn && isPressed(10)){
+                gp.gameState=gp.dialogueState;
+            }
+            else if (isPressed(10)){
+                for (int i=0;i<gs.event.size();i++){
+                    if(gs.event.get(i).name.equals("Mushroom") && gs.event.get(i).eventOn){
+                        gs.player.inventory.add(new Mushroom(gs,16,16));
+                        gp.ui.addMessage("You earn mushroom!");
+                        delete.add(i);
+                    }
+                }
+                for (int j :delete){
+                    gs.event.remove(j);
+                }
+                delete.clear();
+            }
         }
         else if (gp.gameState==gp.pauseState){
             if (isPressed(80)){
@@ -171,6 +183,47 @@ public class KeyHandler implements KeyListener {
                     gp.ui.slotCol++;
                 }
             }
+            if (isPressed(10)){
+                int indexItems = gp.ui.getItemIndexOnSlot();//take index of Items in inventory
+                if(indexItems < gs.player.inventory.size()){
+                    for(SuperObject event:gs.event){
+                        if(event.name.equals("HealingPool") && event.eventOn){
+                            if(gs.player.inventory.get(indexItems) instanceof Potion){
+                                gs.player.inventory.remove(indexItems);
+                                gs.player.inventory.add(new Potion(gs,"Potion",1,16,16));
+                                gp.ui.addMessage("Pour water successfully!");
+                            }
+                        }
+                        if(event.name.equals("TransitionGate") && event.eventOn && !event.alive){
+                            if(gs.player.inventory.get(indexItems) instanceof Fragment){
+                                event.alive=true;
+                                gs.player.inventory.remove(indexItems);
+                            }
+                        }
+                    }
+                    if(gs.player.inventory.get(indexItems) instanceof Reward && gp.ui.messageOn){
+                        gp.ui.pushItems(gs.player.inventory.get(indexItems).name);
+                        gs.player.inventory.remove(indexItems);
+                    }
+                    else if(gs.player.inventory.get(indexItems) instanceof Potion ){
+                        if(((Potion) gs.player.inventory.get(indexItems)).thingStatus==1 && gp.ui.messageOn){
+                            gp.ui.pushItems("Water"+gs.player.inventory.get(indexItems).name);
+                            gs.player.inventory.remove(indexItems);
+                        }
+                        else if(((Potion) gs.player.inventory.get(indexItems)).thingStatus==2) {
+                            if(gs.player.life<gs.player.maxLife){
+                                gs.player.life=gs.player.maxLife;
+                                gs.player.inventory.remove(indexItems);
+                                gp.ui.addMessage("Heal!");
+                            }
+                        }
+                    }
+                    else if(gs.player.inventory.get(indexItems) instanceof Mushroom && gp.ui.messageOn){
+                        gp.ui.pushItems(gs.player.inventory.get(indexItems).name);
+                        gs.player.inventory.remove(indexItems);
+                    }
+                }
+            }
         }
         else if(gp.gameState==gp.dialogueState){
             if(isPressed(10)){
@@ -187,13 +240,10 @@ public class KeyHandler implements KeyListener {
         else if (isPressed(65)) gs.player.direction = "left";
         else gs.player.direction= "idle";
         if (isPressed(75) && !gs.player.projectile.alive){
-            //set sefault
+            //set default
             gs.player.projectile.set(gs.player.x,gs.player.y,gs.player.direction,true,true,8);
             //add to list
             gs.projectile.add(gs.player.projectile);
-        }
-        if (gp.ui.messageOn && isPressed(10)){
-            gp.gameState=gp.dialogueState;
         }
     }
 

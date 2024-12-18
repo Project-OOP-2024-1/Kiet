@@ -1,11 +1,15 @@
 package main;
 
+import objects.Fragment;
+import objects.Potion;
+import objects.Mushroom;
 import objects.SuperObject;
 
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static java.awt.Font.createFont;
 
@@ -20,11 +24,14 @@ public class UI {
     public int titleScreenState=0;
     public int commandNum=0;
     public int messageCounter = 1;
+    public boolean messageOn=false;
+    //
     private int scenarioState=0;
     private String currentDialogue;
     private final ArrayList<String> message;
     private final ArrayList<Integer> messCount;
-    public boolean messageOn=false;
+    private final HashMap<String,Integer> countItems = new HashMap<>();
+    //
     public UI(GamePanel gp,GameSetting gs){
         this.gs=gs;
         this.gp=gp;
@@ -35,6 +42,7 @@ public class UI {
     private void getFont(){
         try {
             InputStream is = getClass().getResourceAsStream("/fonts/DroidSans.ttf");
+            assert is != null;
             DroidSans = createFont(Font.TRUETYPE_FONT, is);
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
@@ -46,6 +54,8 @@ public class UI {
         g2.setFont(DroidSans);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2.setColor(Color.white);
+        //Scrolling message
+        drawMessage();
         //Draw for every gameState
         if (gp.gameState == gp.titleState) {
             drawTitleScreen();
@@ -64,8 +74,6 @@ public class UI {
             drawCharacterScreen();
             drawInventory();
         }
-        //Scrolling message
-        drawMessage();
     }
 
     private void drawInventory() {
@@ -76,10 +84,10 @@ public class UI {
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
 
         //SLOT
-        final int slotXstart = frameX + 20;
-        final int slotYstart = frameY + 20;
-        int slotX = slotXstart;
-        int slotY = slotYstart;
+        final int slotXStart = frameX + 20;
+        final int slotYStart = frameY + 20;
+        int slotX = slotXStart;
+        int slotY = slotYStart;
         int slotSize = gs.tileSize + 3;
 
         //DrawPlayerItems
@@ -87,15 +95,15 @@ public class UI {
             g2.drawImage(gs.player.inventory.get(i).image, slotX, slotY, gs.tileSize, gs.tileSize, null);
             slotX += slotSize;
             if (i == 4 || i == 9 || i == 14) {
-                slotX = slotXstart;
+                slotX = slotXStart;
                 slotY += slotSize;
             }
 
         }
 
         // CURSOR
-        int cursorX = slotXstart + (slotSize * slotCol);
-        int cursorY = slotYstart + (slotSize * slotRow);
+        int cursorX = slotXStart + (slotSize * slotCol);
+        int cursorY = slotYStart + (slotSize * slotRow);
         int cursorWidth = gs.tileSize;
         int cursorHeight = gs.tileSize;
 
@@ -216,10 +224,121 @@ public class UI {
                 case 15:currentDialogue="Old village:\nYou move to South and you will see slimes\n and shits";break;
                 case 16:currentDialogue="Old village:\nKill them and give me the reward!";break;
                 case 17:currentDialogue="                     Mission unlock!\nGather 3 slime hear and 2 stone";break;
-                case 18:messageCounter=0;scenarioState=1;gp.gameState= gp.playState;break;
+                case 18:messageCounter=1;scenarioState=1;gp.gameState=gp.playState;pushItems("Slime core");pushItems("Shit core");break;
             }
         }
-
+        if(scenarioState==1){
+            currentDialogue="                   Mission Procession\n"+countItems.get("Slime core")+"/3 Slime core\n"+countItems.get("Shit core")+"/2 Shit core";
+            if (messageCounter==2 && countItems.get("Slime core")>=3 && countItems.get("Shit core")>=2) {
+                gp.gameState = gp.playState;
+                countItems.put("Slime core",countItems.get("Slime core")-3);
+                countItems.put("Shit core",countItems.get("Shit core")-2);
+                scenarioState=2;
+                messageCounter = 0;
+            }
+            else if (messageCounter==2){
+                messageCounter=1;
+                gp.gameState=gp.playState;
+            }
+        }
+        else if (scenarioState==2){
+            switch (messageCounter){
+                case 1:currentDialogue="Old village:\nGood job!";break;
+                case 2:currentDialogue="Old village:\nIt requires a little bit time!";break;
+                case 3:currentDialogue="Old village:\nYeah,Complete!";break;
+                case 4:currentDialogue="Old village:\nCome here!";
+                case 5:
+                    addMessage("Congratulate!");
+                    addMessage("You are learning new skill!");//Adding something here
+                    addMessage("Throw Stone!");
+                    messageCounter=0;
+                    scenarioState=3;
+                    gp.gameState=gp.playState;
+                    break;
+            }
+        }
+        else if(scenarioState==3){
+            switch (messageCounter){
+                case 1:currentDialogue="Old village:\nI will formulate a health portion";break;
+                case 2:currentDialogue="Knight:\nReally!!";break;
+                case 3:currentDialogue="Old village:\nYeah, but you must gather 8 mushrooms!";break;
+                case 4: currentDialogue="Old village:\nHere is it!";break;
+                case 5:
+                    gs.player.inventory.add(new Mushroom(gs,16,16));
+                    addMessage("Receive mushroom!");
+                    pushItems("Mushroom");
+                    messageCounter=6;
+                    break;
+                case 6: currentDialogue="                   Mission Procession\n"+countItems.get("Mushroom")+"/8 mushrooms";break;
+                case 7:
+                    if (countItems.get("Mushroom")>=8){
+                        countItems.put("Mushroom",0);
+                        messageCounter++;
+                    }
+                    else{
+                        messageCounter=6;
+                        gp.gameState=gp.playState;
+                    }
+                    break;
+                case 8, 13:currentDialogue="               Complete mission!";break;
+                case 9: currentDialogue="Old village:\nOkay!Now move to lake and take cure \nwater!";break;
+                case 10:
+                    gs.player.inventory.add(new Potion(gs,"Potion",0,16,16));
+                    gs.player.inventory.add(new Potion(gs,"Potion",0,16,16));
+                    gs.player.inventory.add(new Potion(gs,"Potion",0,16,16));
+                    addMessage("Receive empty bottle");
+                    pushItems("WaterPotion");
+                    messageCounter=11;
+                    break;
+                case 11: currentDialogue="                   Mission Procession\n"+countItems.get("WaterPotion")+"/3 water portion";break;
+                case 12:
+                    if (countItems.get("WaterPotion")>=3){
+                        countItems.put("WaterPotion",0);
+                        messageCounter++;
+                    }
+                    else {
+                        messageCounter=11;
+                        gp.gameState=gp.playState;
+                    }
+                    break;
+                case 14: currentDialogue="Old village:\nTake them!";break;
+                case 15:
+                    gs.player.inventory.add(new Potion(gs,"Potion",2,16,16));
+                    gs.player.inventory.add(new Potion(gs,"Potion",2,16,16));
+                    gs.player.inventory.add(new Potion(gs,"Potion",2,16,16));
+                    addMessage("Receive cure bottles!");
+                    messageCounter=16;
+                    break;
+                case 16:
+                    messageCounter=0;
+                    scenarioState=4;
+                    gp.gameState=gp.playState;
+                    break;
+            }
+        }
+        else if (scenarioState==4){
+            switch (messageCounter){
+                case 1:currentDialogue="Old village:\nOkay now!Are you ready?";break;
+                case 2: currentDialogue="Here is key to activate the gate!";break;
+                case 3:
+                    gs.player.inventory.add(new Fragment(gs,16,16));
+                    addMessage("Receiving the fragment!");
+                    messageCounter=4;
+                    break;
+                case 4:
+                    messageCounter=0;
+                    gp.gameState=gp.playState;
+                    scenarioState=5;
+                    break;
+            }
+        }
+        else if(scenarioState==5){
+            currentDialogue="Old village:\nGood luck!";
+            if(messageCounter==1){
+                gp.gameState=gp.playState;
+                messageCounter=0;
+            }
+        }
     }
 
     private void drawPauseScreen() {
@@ -372,7 +491,7 @@ public class UI {
         return tailX - length;
     }
 
-    private void addMessage(String text){
+    public void addMessage(String text){
         message.add(text);
         messCount.add(0);
     }
@@ -393,10 +512,16 @@ public class UI {
                         }
                     }
                 }
-                if(event.name.equals("Mushroom")){
-
-                }
             }
+        }
+    }
+    //Take
+    public void pushItems(String name){
+        if(!countItems.containsKey(name)){
+            countItems.put(name,0);
+        }
+        else {
+            countItems.put(name,countItems.get(name)+1);
         }
     }
 }

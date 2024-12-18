@@ -22,10 +22,10 @@ public class Projectile extends SolidEntity {
         this.scale=scale;
         frameCount=2;
         if (name.equals("Ghost")) frameCount=3;
-        if (name.equals("SlimeBall"))frameCount=1;
+        if (name.equals("Slime")) frameCount=1;
         solidArea=new Rectangle(width*scale/4,height*scale/4,width*scale/2,height*scale/2);
         this.alive=false;
-        getImage(name,width,height);
+        getImage(name+"Ball",width,height);
     }
     public void set(int x, int y, String direction,boolean alive, boolean isPlayer,int speed){
         this.isPlayer=isPlayer;
@@ -54,7 +54,7 @@ public class Projectile extends SolidEntity {
         if (counterSprite > 15) {
             numSprite++;
             if (numSprite>frameCount-1){
-                numSprite=1;
+                numSprite=0;
             }
             counterSprite=0;
         }
@@ -82,9 +82,27 @@ public class Projectile extends SolidEntity {
 
     @Override
     public void draw(Graphics2D g2) {
-        super.draw(g2);
         int screenX = x - gs.player.x + gs.player.screenX;
         int screenY = y - gs.player.y + gs.player.screenY;
-        g2.drawImage(image,screenX,screenY,width*scale,height*scale,null);
+        if (x + gs.tileSize > gs.player.x - gs.player.screenX &&
+                x - gs.tileSize < gs.player.x + gs.player.screenX &&
+                y + gs.tileSize > gs.player.y - gs.player.screenY &&
+                y - gs.tileSize < gs.player.y + gs.player.screenY) {
+            switch (direction) {
+                case "right":
+                    image = rightSprites[numSprite];
+                    break;
+                case "left":
+                    image = leftSprites[numSprite];
+                    break;
+                case "down", "idle":
+                    image = downSprites[numSprite];
+                    break;
+                case "up":
+                    image = upSprites[numSprite];
+                    break;
+            }
+            g2.drawImage(image,screenX,screenY,width*scale,height*scale,null);
+        }
     }
 }

@@ -42,10 +42,11 @@ public class GameSetting {
     }
     public void Setting(){
         setNPC("GirlMagician",6,14,15,180,180,2,2,false);
-        setNPC("Slime",8,16,17,16,16,1,3,true);
+        setNPC("Slime",6,16,17,16,16,1,1,true);
         setEvent("TransitionGate",16,24,16,32,2);
         setEvent("HealingPool",15,22,16,16,1);
         setEvent("Mushroom",15,20,16,16,1);
+        setNPC("Shit",4,14,17,16,16,1,1,true);
     }
     private void setNPC(String name,int maxLife, int x, int y, int width, int height, int scale,int speed, boolean isMonster){
         npc.add(new NPC(this,name,maxLife, x, y, width, height,  scale,speed, isMonster));
@@ -65,8 +66,13 @@ public class GameSetting {
             }
         }
         entityList.addAll(projectile);
+        //setup order to draw
         entityList.sort(Comparator.comparingInt(o -> o.y));
-        entityList.addFirst(event.get(1));
+        for (SuperObject entity: event){
+            if(entity.name.equals("HealingPool")){
+                entityList.addFirst(entity);
+            }
+        }
         return entityList;
     }
 
