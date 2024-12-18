@@ -147,14 +147,17 @@ public class CollisionChecker {
     private void Damaged(NPC npc){
         Player player=gs.player;
         int distance= (int) Math.sqrt((player.x-npc.x)*(player.x-npc.x)+(player.y-npc.y)*(player.y-npc.y));
-        if(player.attack && !npc.invincible && distance<npc.scale*45){
+        if(player.attack && !npc.invincible && distance<npc.scale*60){
             if((player.y<npc.y && player.direction.equals("down")) ||
                 (player.y<npc.y && player.direction.equals("idle"))||
                 (player.y>npc.y && player.direction.equals("up"))  ||
                 (player.x>npc.x && player.direction.equals("left"))||
                 (player.x<npc.x && player.direction.equals("right"))){
                 npc.invincible=true;
-                npc.life--;
+                npc.life-=gs.player.damage;
+                if(gs.player.damage==3){
+                    gp.ui.addMessage("Critical!");
+                }
             }
         }
     }

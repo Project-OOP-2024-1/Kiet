@@ -14,6 +14,7 @@ import java.util.Comparator;
 public class GameSetting {
     public final int originalTileSize = 16; // 16x16 tile
     final int scale = 3;
+    public boolean boss=false;
     //Set Value of tile
     public final int tileSize = originalTileSize * scale; // 48x48 tile
     public int maxScreenCol = 16;
@@ -41,15 +42,13 @@ public class GameSetting {
         heart=new Heart(this);
     }
     public void Setting(){
-        setNPC("GirlMagician",6,14,15,180,180,2,2,false);
+        setNPC("GirlMagician",6,14,15,180,180,1,1,false);
         setNPC("Slime",8,43,46,16,16,1,1,true);
         setNPC("Slime",8,49,29,16,16,1,1,true);
-        setNPC("Slime",8,40,30,16,16,1,1,true);
         setNPC("Slime",8,36,42,16,16,1,1,true);
         setNPC("Slime",8,32,31,16,16,1,1,true);
         setNPC("Shit",8,43,47,16,16,1,2,true);
         setNPC("Shit",8,40,13,16,16,1,2,true);
-        setNPC("Shit",8,38,44,16,16,1,2,true);
         setNPC("Shit",8,40,18,16,16,1,2,true);
         setEvent("TransitionGate",40,7,16,32,2);
         setEvent("HealingPool",41,36,16,16,1);
@@ -62,7 +61,6 @@ public class GameSetting {
         setEvent("Mushroom",48,49,16,16,1);
         setEvent("Chest",6,50,16,16,1);
         setNPC("Slime",6,16,17,16,16,1,1,true);
-        setEvent("TransitionGate",16,24,16,32,2);
         setEvent("Mushroom",15,20,16,16,1);
         setNPC("Shit",4,14,17,16,16,1,2,true);
     }
@@ -85,7 +83,11 @@ public class GameSetting {
         }
         entityList.addAll(projectile);
         entityList.sort(Comparator.comparingInt(o -> o.y));
-        entityList.addFirst(event.get(1));
+        for (SuperObject entity: event){
+            if(entity.name.equals("HealingPool")){
+                entityList.addLast(entity);
+            }
+        }
         return entityList;
     }
 

@@ -19,7 +19,6 @@ public class SpriteSheet {
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
 
-
         try {
             // Load the sprite sheet image
             spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(filePath)));

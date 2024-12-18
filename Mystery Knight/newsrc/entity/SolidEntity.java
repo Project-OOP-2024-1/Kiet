@@ -14,6 +14,7 @@ public class SolidEntity extends Entity{
     public int life;
     public int maxLife;
     public int speed;
+    public int damage;
     public int frameCount;
     public String direction;
     public boolean collisionOn;

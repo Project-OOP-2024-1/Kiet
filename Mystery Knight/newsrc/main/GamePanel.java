@@ -1,7 +1,9 @@
 package main;
 
 import entity.SolidEntity;
+import objects.Fragment;
 import objects.Mushroom;
+import objects.Potion;
 import objects.Reward;
 import processors.CollisionChecker;
 import processors.KeyHandler;
@@ -28,6 +30,8 @@ public class GamePanel extends JPanel implements Runnable {
     public final int pauseState =2;
     public final int dialogueState=3;
     public final int characterState=4;
+    public final int gameOverState=5;
+    public final int Ending=6;
     //
     public GamePanel() {
         gs=new GameSetting();
@@ -41,17 +45,26 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);// Recognizes pressed keys
         this.setFocusable(true);// This is required for the panel to receive keyboard events
     }
+    //
     public void startGameThread() {
         // Instantiate a thread
         gameThread = new Thread(this);
         gameThread.start();
     }
+    //
     public void gameSetup(){
         tempScreen = new BufferedImage(gs.screenWidth,gs.screenHeight,BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) tempScreen.getGraphics();
         gs.Setting();
         gameState=titleState;
 //        setFullScreen();
+    }
+    //
+    public void restart(){
+        gs.player.alive=true;
+        gs.player.x=14*gs.tileSize;
+        gs.player.y=12*gs.tileSize;
+        gs.player.life=gs.player.maxLife;
     }
     /**
      * Runs this operation.
@@ -90,9 +103,13 @@ public class GamePanel extends JPanel implements Runnable {
         ArrayList<Integer> delete=new ArrayList<>();
         if (gameState==playState) {
             gs.heart.update();
+            //player
             keyH.controlPlayer();
             collisionChecker.controlCollision();
             gs.player.update();
+            if(!gs.player.alive){
+                gameState=gameOverState;
+            }
             //monster
             for (int i = 0; i < gs.npc.size(); i++) {
                 if (gs.npc.get(i).alive) {

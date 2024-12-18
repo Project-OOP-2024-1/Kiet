@@ -201,6 +201,14 @@ public class KeyHandler implements KeyListener {
                                 gs.player.inventory.remove(indexItems);
                             }
                         }
+                        if(event.name.equals("Chest") && event.eventOn){
+                            if(gs.player.inventory.get(indexItems).name.equals("Key")){
+                                gs.player.inventory.remove(indexItems);
+                                gs.player.inventory.add(new HolyGrail(gs,16,16));
+                                gp.ui.addMessage("Receive treasure!");
+                                gp.gameState=gp.Ending;
+                            }
+                        }
                     }
                     if(gs.player.inventory.get(indexItems) instanceof Reward && gp.ui.messageOn){
                         gp.ui.pushItems(gs.player.inventory.get(indexItems).name);
@@ -229,6 +237,37 @@ public class KeyHandler implements KeyListener {
         else if(gp.gameState==gp.dialogueState){
             if(isPressed(10)){
                 gp.ui.messageCounter++;
+            }
+        }
+        else if(gp.gameState==gp.gameOverState){
+            if(isPressed(87)) {
+                gp.ui.commandNum--;
+                if (gp.ui.commandNum < 0){
+                    gp.ui.commandNum = 1;
+                }
+            }
+            if(isPressed(83)) {
+                gp.ui.commandNum++;
+                if (gp.ui.commandNum > 1){
+                    gp.ui.commandNum = 0;
+                }
+            }
+            if (isPressed(10)) {
+                if (gp.ui.commandNum == 0){
+                    gp.restart();
+                    gp.gameState = gp.playState;
+                }
+                else if (gp.ui.commandNum == 1){
+                    gp.gameState = gp.titleState;
+                    System.exit(0);
+                }
+            }
+        }
+        else if(gp.gameState==gp.Ending){
+            if (isPressed(10)) {
+                if (gp.ui.commandNum == 0) {
+                    System.exit(0);
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 package main;
 
+import characters.NPC;
 import objects.Fragment;
 import objects.Potion;
 import objects.Mushroom;
@@ -73,6 +74,42 @@ public class UI {
         if(gp.gameState==gp.characterState){
             drawCharacterScreen();
             drawInventory();
+        }
+        //GameOver
+        if(gp.gameState==gp.gameOverState){
+            drawGameOverScreen();
+        }
+        //Ending
+        if(gp.gameState==gp.Ending){
+            drawEnding();
+        }
+    }
+
+    private void drawEnding() {
+        g2.setColor(new Color(0,0,0,150));
+        g2.fillRect(0, 0, gs.screenWidth, gs.screenHeight);
+
+        int x;
+        int y;
+        String text;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,80f));
+
+        text = "You are Winner!";
+        x = getXForCenteredText(text);
+        y = gs.tileSize*4;
+        //Shadow
+        g2.setColor(Color.black);
+        g2.drawString(text, x, y);
+        //Main
+        g2.setColor(Color.white);
+        g2.drawString(text, x-4, y-4);
+        g2.setFont(g2.getFont().deriveFont(40f));
+        text = "Quit";
+        x = getXForCenteredText(text);
+        y += gs.tileSize*4;
+        g2.drawString(text, x, y);
+        if(commandNum == 0) {
+            g2.drawString(">", x-40, y);
         }
     }
 
@@ -204,25 +241,64 @@ public class UI {
         }
     }
 
+    private void drawGameOverScreen(){
+        g2.setColor(new Color(0,0,0,150));
+        g2.fillRect(0, 0, gs.screenWidth, gs.screenHeight);
+
+        int x;
+        int y;
+        String text;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD,100f));
+
+        text = "Game Over";
+        x = getXForCenteredText(text);
+        y = gs.tileSize*4;
+        //Shadow
+        g2.setColor(Color.black);
+        g2.drawString(text, x, y);
+        //Main
+        g2.setColor(Color.white);
+        g2.drawString(text, x-4, y-4);
+
+        //Retry
+        g2.setFont(g2.getFont().deriveFont(40f));
+        text = "Restart";
+        x = getXForCenteredText(text);
+        y += gs.tileSize*4;
+        g2.drawString(text, x, y);
+        if(commandNum == 0) {
+            g2.drawString(">", x-40, y);
+        }
+
+        //Back to the title screen
+        text = "Quit";
+        x = getXForCenteredText(text);
+        y += 55;
+        g2.drawString(text, x, y);
+        if(commandNum == 1) {
+            g2.drawString(">", x-40, y);
+        }
+    }
+
     private void setContent() {
         if (scenarioState==0){
             switch (messageCounter){
-                case 1: currentDialogue="Old village:\nGood morning Young Knight!";break;
+                case 1: currentDialogue="Girl Magician:\nGood morning Young Knight!";break;
                 case 2: currentDialogue="Knight:\nYeah,Good morning!";break;
                 case 3: currentDialogue="Knight:\nWhat is happening?\nWhere are everybody?";break;
-                case 4: currentDialogue="Old village:\nSome of they have luckily escaped, others \nare killed by that monster.....";break;
+                case 4: currentDialogue="Girl Magician:\nSome of they have luckily escaped, others \nare killed by that monster.....";break;
                 case 5: currentDialogue="Knight:\nHuh...";break;
                 case 6: currentDialogue="Knight:\nThey are killed.....";break;
                 case 7: currentDialogue="Knight:\nWhere....where..is..that monster???";break;
                 case 8: currentDialogue="Knight:\nGru....h.h!";break;
-                case 9: currentDialogue="Old village:\nYour power now is not sufficient.You may\n be killed";break;
-                case 10:currentDialogue="Old village:\nHold on!";break;
+                case 9: currentDialogue="Girl Magician:\nYour power now is not sufficient.You may\n be killed";break;
+                case 10:currentDialogue="Girl Magician:\nHold on!";break;
                 case 11:currentDialogue="Knight:\nWhy are you still here?. Why don't you \nfollow to other people?";break;
-                case 12:currentDialogue="Old village:\nI am a wizard.\nI know you will come here!";break;
-                case 13:currentDialogue="Old village:\nYou are strong but not enough..";break;
-                case 14:currentDialogue="Old village:\nDon't worry..I will teach you a special\n skill!";break;
-                case 15:currentDialogue="Old village:\nYou move to South and you will see slimes\n and shits";break;
-                case 16:currentDialogue="Old village:\nKill them and give me the reward!";break;
+                case 12:currentDialogue="Girl Magician:\nI am a wizard.\nI know you will come here!";break;
+                case 13:currentDialogue="Girl Magician:\nYou are strong but not enough..";break;
+                case 14:currentDialogue="Girl Magician:\nDon't worry..I will teach you a special\n skill!";break;
+                case 15:currentDialogue="Girl Magician:\nYou move to South and you will see \nslimes and shits";break;
+                case 16:currentDialogue="Girl Magician:\nKill them and give me the reward!";break;
                 case 17:currentDialogue="                     Mission unlock!\nGather 3 slime hear and 2 stone";break;
                 case 18:messageCounter=1;scenarioState=1;gp.gameState=gp.playState;pushItems("Slime core");pushItems("Shit core");break;
             }
@@ -243,15 +319,15 @@ public class UI {
         }
         else if (scenarioState==2){
             switch (messageCounter){
-                case 1:currentDialogue="Old village:\nGood job!";break;
-                case 2:currentDialogue="Old village:\nIt requires a little bit time!";break;
-                case 3:currentDialogue="Old village:\nYeah,Complete!";break;
-                case 4:currentDialogue="Old village:\nCome here!";
+                case 1:currentDialogue="Girl Magician:\nGood job!";break;
+                case 2:currentDialogue="Girl Magician:\nIt requires a little bit time!";break;
+                case 3:currentDialogue="Girl Magician:\nYeah,Complete!";break;
+                case 4:currentDialogue="Girl Magician:\nCome here!";
                 case 5:
                     addMessage("Congratulate!");
                     addMessage("You are learning new skill!");//Adding something here
                     addMessage("Throw Stone!");
-                    messageCounter=0;
+                    messageCounter=1;
                     scenarioState=3;
                     gp.gameState=gp.playState;
                     break;
@@ -259,10 +335,10 @@ public class UI {
         }
         else if(scenarioState==3){
             switch (messageCounter){
-                case 1:currentDialogue="Old village:\nI will formulate a health portion";break;
+                case 1:currentDialogue="Girl Magician:\nI will formulate a health portion";break;
                 case 2:currentDialogue="Knight:\nReally!!";break;
-                case 3:currentDialogue="Old village:\nYeah, but you must gather 8 mushrooms!";break;
-                case 4: currentDialogue="Old village:\nHere is it!";break;
+                case 3:currentDialogue="Girl Magician:\nYeah, but you must gather 8 mushrooms!";break;
+                case 4: currentDialogue="Girl Magician:\nHere is it!";break;
                 case 5:
                     gs.player.inventory.add(new Mushroom(gs,16,16));
                     addMessage("Receive mushroom!");
@@ -301,7 +377,7 @@ public class UI {
                         gp.gameState=gp.playState;
                     }
                     break;
-                case 14: currentDialogue="Old village:\nTake them!";break;
+                case 14: currentDialogue="Girl Magician:\nTake them!";break;
                 case 15:
                     gs.player.inventory.add(new Potion(gs,"Potion",2,16,16));
                     gs.player.inventory.add(new Potion(gs,"Potion",2,16,16));
@@ -310,7 +386,7 @@ public class UI {
                     messageCounter=16;
                     break;
                 case 16:
-                    messageCounter=0;
+                    messageCounter=1;
                     scenarioState=4;
                     gp.gameState=gp.playState;
                     break;
@@ -318,7 +394,7 @@ public class UI {
         }
         else if (scenarioState==4){
             switch (messageCounter){
-                case 1:currentDialogue="Old village:\nOkay now!Are you ready?";break;
+                case 1:currentDialogue="Girl Magician:\nOkay now!Are you ready?";break;
                 case 2: currentDialogue="Here is key to activate the gate!";break;
                 case 3:
                     gs.player.inventory.add(new Fragment(gs,16,16));
@@ -326,18 +402,31 @@ public class UI {
                     messageCounter=4;
                     break;
                 case 4:
-                    messageCounter=0;
+                    messageCounter=1;
                     gp.gameState=gp.playState;
                     scenarioState=5;
                     break;
             }
         }
         else if(scenarioState==5){
-            currentDialogue="Old village:\nGood luck!";
+            currentDialogue="Girl Magician:\nGood luck!";
             if(messageCounter==1){
                 gp.gameState=gp.playState;
                 messageCounter=0;
             }
+        }
+        else if(scenarioState==6){
+            switch (messageCounter){
+                case 1:currentDialogue="Ghost:\nI'm waiting for you";break;
+                case 2:currentDialogue="Knight:\nYou gotta die!";break;
+                case 3:currentDialogue="Knight:\nYou are not welcome here!";break;
+                case 4:currentDialogue="Ghost:\nHa ha ha....";break;
+                case 5:
+                    messageCounter=1;
+                    gp.gameState=gp.playState;
+                    break;
+            }
+
         }
     }
 
@@ -503,6 +592,12 @@ public class UI {
                 if (event.name.equals("TransitionGate")){
                     if(event.alive){
                         addMessage("Transition successfully!");
+                        if(!gs.boss){
+                            gs.npc.add(new NPC(gs,"Ghost",30,15,45,30,30,3,1,true));
+                            gp.gameState=gp.dialogueState;
+                            scenarioState=6;
+                            gs.boss=true;
+                        }
                     }
                     else {
                         event.counterSprite++;
@@ -510,6 +605,19 @@ public class UI {
                             addMessage("You need a fragment!");
                             event.counterSprite=0;
                         }
+                    }
+                }
+                if(event.name.equals("HealingPool")){
+                    if(gs.player.life<gs.player.maxLife){
+                        if(event.counterSprite>39){
+                            addMessage("Healing!");
+                        }
+                    }
+                    else {
+                        if(event.counterSprite>39){
+                            addMessage("Full health!");
+                        }
+
                     }
                 }
             }

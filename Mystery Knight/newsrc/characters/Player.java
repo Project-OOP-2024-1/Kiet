@@ -9,6 +9,7 @@ import processors.SpriteSheet;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Player extends SolidEntity implements DeathAnimation {
     public int screenX;
@@ -30,6 +31,7 @@ public class Player extends SolidEntity implements DeathAnimation {
         this.y=y;
         this.speed=3;
         maxLife=6;
+        damage=3;
         life=maxLife;
         frameCount=4;
         direction="idle";
@@ -39,6 +41,7 @@ public class Player extends SolidEntity implements DeathAnimation {
         attack=false;
         projectile=new Projectile(gs,name,gs.originalTileSize,gs.originalTileSize,3,80);
         getImage(name,gs.originalTileSize,gs.originalTileSize);
+        alive=true;
     }
 
     @Override
@@ -65,6 +68,7 @@ public class Player extends SolidEntity implements DeathAnimation {
 
     @Override
     public void update() {
+        damage= new Random().nextInt(1,4);
         if(!collisionOn && !attack){
             switch (direction){
                 case "up":  y -= speed;break;
@@ -108,6 +112,12 @@ public class Player extends SolidEntity implements DeathAnimation {
 
     @Override
     public void draw(Graphics2D g2) {
+        if (invincible){
+            if (invincibleCounter<20) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.2f));
+            else if (invincibleCounter<40) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.8f));
+            else if (invincibleCounter<60) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.4f));
+            else g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.6f));
+        }
         if (!attack){
             switch (direction) {
                 case "right":
@@ -147,13 +157,14 @@ public class Player extends SolidEntity implements DeathAnimation {
                     break;
             }
         }
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
     }
 
     @Override
     public void updateDeath() {
         deathSprite++;
         if (deathSprite>20){
-            if (numDeath>2){
+            if (numDeath>frameCount-2){
                 numDeath=0;
                 alive=false;
             }

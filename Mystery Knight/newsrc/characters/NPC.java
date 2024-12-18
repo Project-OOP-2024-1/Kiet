@@ -55,11 +55,14 @@ public class NPC extends SolidEntity implements DeathAnimation {
         }
         else {
             //
-            if (name.equals("Slime") || name.equals("Ghost")) {
+            if (name.equals("Slime") ) {
                 attackByProjectile();
             }
             if (name.equals("Shit")) {
                 attackByHand();
+            }
+            if(name.equals("Ghost")){
+                attackMix();
             }
         }
     }
@@ -259,9 +262,11 @@ public class NPC extends SolidEntity implements DeathAnimation {
                 }
             }
             if(distance<40){
-                if(gs.player.life>0 && !gs.player.invincible){
-                    gs.player.invincible=true;
-                    gs.player.life--;
+                if(choice==0){
+                    if(gs.player.life>0 && !gs.player.invincible){
+                        gs.player.invincible=true;
+                        gs.player.life--;
+                    }
                 }
             }
         } else {
@@ -322,6 +327,153 @@ public class NPC extends SolidEntity implements DeathAnimation {
         }
 
     }
+    public void attackMix(){
+        if (defaultX == 0 && defaultY == 0) {
+            defaultX = x;
+            defaultY = y;
+        }
+        Random ran = new Random();
+        int choice = ran.nextInt(2);
+        //calculate range Attack for monster
+        int distanceX = gs.player.x - x;
+        int distanceY = gs.player.y - y;
+        double distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+        // setAction  for every distance
+        if (distance < gs.tileSize * 24) {
+            //locate Player in 4 direction
+            if (!projectile.alive){
+                //set default
+                projectile.set(x,y,direction,true,false,4);
+                //add to list
+                gs.projectile.add(projectile);
+            }
+            if (distanceX > 0 && distanceY > 0) {//SouthEast
+                switch (choice) {
+                    case 0:
+                        direction = "down";
+                        break;
+                    case 1:
+                        direction = "right";
+                        break;
+                }
+            }
+            if (distanceX < 0 && distanceY > 0) {//SouthWest
+                switch (choice) {
+                    case 0:
+                        direction = "down";
+                        break;
+                    case 1:
+                        direction = "left";
+                        break;
+                }
+            }
+            if (distanceX > 0 && distanceY < 0) {//NorthEast
+                switch (choice) {
+                    case 0:
+                        direction = "up";
+                        break;
+                    case 1:
+                        direction = "right";
+                        break;
+                }
+            }
+            if (distanceX < 0 && distanceY < 0) {//NorthWest
+                switch (choice) {
+                    case 0:
+                        direction = "up";
+                        break;
+                    case 1:
+                        direction = "left";
+                        break;
+                }
+            }
+            if(distance<gs.tileSize*7){
+                attack=true;
+                if(Math.abs(distanceX)<Math.abs(distanceY)){
+                    if(distanceY>0){
+                        direction="down";
+                    }
+                    else {
+                        direction="up";
+                    }
+                }
+                else {
+                    if(distanceX>0){
+                        direction="right";
+                    }
+                    else{
+                        direction="left";
+                    }
+                }
+            }
+            else {
+                attack=false;
+            }
+            if(distanceX< gs.tileSize*scale){
+                if(choice==0){
+                    if(gs.player.life>0 && !gs.player.invincible){
+                        gs.player.invincible=true;
+                        gs.player.life--;
+                    }
+                }
+            }
+        } else {
+            attack=false;
+            distanceX=defaultX-x;
+            distanceY=defaultY-y;
+            if(!collisionOn){
+                if (distanceX > 0 && distanceY > 0) {//SouthEast
+                    switch (choice) {
+                        case 0:
+                            direction = "down";
+                            break;
+                        case 1:
+                            direction = "right";
+                            break;
+                    }
+                }
+                if (distanceX < 0 && distanceY > 0) {//SouthWest
+                    switch (choice) {
+                        case 0:
+                            direction = "down";
+                            break;
+                        case 1:
+                            direction = "left";
+                            break;
+                    }
+                }
+                if (distanceX > 0 && distanceY < 0) {//NorthEast
+                    switch (choice) {
+                        case 0:
+                            direction = "up";
+                            break;
+                        case 1:
+                            direction = "right";
+                            break;
+                    }
+                }
+                if (distanceX < 0 && distanceY < 0) {//NorthWest
+                    switch (choice) {
+                        case 0:
+                            direction = "up";
+                            break;
+                        case 1:
+                            direction = "left";
+                            break;
+                    }
+                }
+            }
+            else {
+                choice=ran.nextInt(4);
+                switch (choice){
+                    case 0:direction="up";break;
+                    case 1:direction="down";break;
+                    case 2:direction="right";break;
+                    case 3:direction="left";break;
+                }
+            }
+        }
+    }
     @Override
     public void update() {
         if(!collisionOn && !attack && life>0){
@@ -378,10 +530,20 @@ public class NPC extends SolidEntity implements DeathAnimation {
         }
         //Hp monster
         if(isMonster){
-            g2.setColor(new Color(35,35,35));
-            g2.fillRect(screenX-(maxLife*8*scale-48)/2,screenY-16*scale,maxLife*8*scale,10);
-            g2.setColor(new Color(255,0,30));
-            g2.fillRect(screenX-(maxLife*8*scale-48)/2,screenY-16*scale, life*8*scale,10);
+            if(!name.equals("Ghost")){
+                g2.setColor(new Color(35,35,35));
+                g2.fillRect(screenX-(maxLife*8*scale-48)/2,screenY-16*scale,maxLife*8*scale,10);
+                g2.setColor(new Color(255,0,30));
+                g2.fillRect(screenX-(maxLife*8*scale-48)/2,screenY-16*scale, life*8*scale,10);
+            }
+            else {
+                g2.setColor(new Color(35,35,35));
+                g2.fillRect((gs.screenWidth-maxLife*8*scale)/2,gs.screenHeight-30,maxLife*8*scale,15);
+                g2.setColor(new Color(255,0,30));
+                g2.fillRect((gs.screenWidth-maxLife*8*scale)/2,gs.screenHeight-30, life*8*scale,15);
+                g2.setColor(Color.white);
+                g2.drawString(name,(gs.screenWidth-maxLife*8*scale)/2,gs.screenHeight-40);
+            }
         }
         if (invincible){
             if (invincibleCounter<20) g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,0.2f));
@@ -401,7 +563,7 @@ public class NPC extends SolidEntity implements DeathAnimation {
     public void updateDeath() {
         deathSprite++;
         if (deathSprite>20){
-            if (numDeath>2){
+            if (numDeath>frameCount-2){
                 numDeath=0;
                 alive=false;
             }

@@ -1,5 +1,6 @@
 package objects;
 
+import characters.NPC;
 import entity.SolidEntity;
 import main.GameSetting;
 import processors.SpriteSheet;
@@ -36,7 +37,7 @@ public class SuperObject extends SolidEntity {
         try {
             inactive=sheet.getSprite(1,0);
             active=sheet.getSprite(2,0);
-        }catch (Exception e){
+        }catch (Exception e){//
             inactive=sheet.getSprite(0,0);
             active=sheet.getSprite(0,0);
         }
@@ -45,7 +46,11 @@ public class SuperObject extends SolidEntity {
 
     public void update(){
         if (this.name.equals("HealingPool")){
-            if (gs.player.life<gs.player.maxLife) gs.player.life++;
+            counterSprite++;
+            if(counterSprite>40){
+                if (gs.player.life<gs.player.maxLife) gs.player.life++;
+                counterSprite=0;
+            }
             //fill this
         } else if (this.name.equals("TransitionGate")) {
             if(alive){
