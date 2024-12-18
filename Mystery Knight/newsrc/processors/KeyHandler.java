@@ -12,6 +12,7 @@ public class KeyHandler implements KeyListener {
     private final HashMap<Integer, Boolean> Key_Set;
     GameSetting gs;
     GamePanel gp;
+    private int counter=0;
     public KeyHandler(GameSetting gs,GamePanel gp){
         this.gs = gs;
         this.gp=gp;
@@ -239,11 +240,15 @@ public class KeyHandler implements KeyListener {
         else if (isPressed(68)) gs.player.direction = "right";
         else if (isPressed(65)) gs.player.direction = "left";
         else gs.player.direction= "idle";
-        if (isPressed(75) && !gs.player.projectile.alive){
-            //set default
-            gs.player.projectile.set(gs.player.x,gs.player.y,gs.player.direction,true,true,8);
-            //add to list
-            gs.projectile.add(gs.player.projectile);
+        counter++;
+        if(counter>20){
+            if (isPressed(75) && !gs.player.projectile.alive){
+                //set default
+                gs.player.projectile.set(gs.player.x,gs.player.y,gs.player.direction,true,true,8);
+                //add to list
+                gs.projectile.add(gs.player.projectile);
+            }
+            counter=0;
         }
     }
 

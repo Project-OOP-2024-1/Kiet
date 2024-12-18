@@ -132,8 +132,9 @@ public class CollisionChecker {
         }
         if(entity.solidArea.intersects(t.solidArea)) {
             entity.collisionOn=true;
-            if (entity instanceof Projectile){
+            if (entity instanceof Projectile && !gs.player.invincible){
                 t.life--;
+                gs.player.invincible=true;
             }
         }
         // return origin

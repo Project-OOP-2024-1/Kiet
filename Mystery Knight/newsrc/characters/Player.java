@@ -101,6 +101,7 @@ public class Player extends SolidEntity implements DeathAnimation {
             }
         }
         if(life<=0){
+            life=0;
             updateDeath();
         }
     }
