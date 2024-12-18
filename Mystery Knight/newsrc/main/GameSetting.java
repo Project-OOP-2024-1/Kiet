@@ -42,6 +42,26 @@ public class GameSetting {
     }
     public void Setting(){
         setNPC("GirlMagician",6,14,15,180,180,2,2,false);
+        setNPC("Slime",8,43,46,16,16,1,3,true);
+        setNPC("Slime",8,49,29,16,16,1,3,true);
+        setNPC("Slime",8,40,30,16,16,1,3,true);
+        setNPC("Slime",8,36,42,16,16,1,3,true);
+        setNPC("Slime",8,32,31,16,16,1,3,true);
+        setNPC("Shit",8,43,47,16,16,1,3,true);
+        setNPC("Shit",8,40,13,16,16,1,3,true);
+        setNPC("Shit",8,38,44,16,16,1,3,true);
+        setNPC("Shit",8,40,18,16,16,1,3,true);
+        setNPC("Ghost",24,15,45,16,16,1,3,true);
+        setEvent("TransitionGate",40,7,16,32,2);
+        setEvent("HealingPool",41,36,16,16,1);
+        setEvent("Mushroom",9,15,16,16,1);
+        setEvent("Mushroom",17,17,16,16,1);
+        setEvent("Mushroom",9,24,16,16,1);
+        setEvent("Mushroom",51,31,16,16,1);
+        setEvent("Mushroom",19,31,16,16,1);
+        setEvent("Mushroom",42,38,16,16,1);
+        setEvent("Mushroom",48,49,16,16,1);
+        setEvent("Chest",6,50,16,16,1);
         setNPC("Slime",6,16,17,16,16,1,1,true);
         setEvent("TransitionGate",16,24,16,32,2);
         setEvent("HealingPool",15,22,16,16,1);
@@ -66,13 +86,8 @@ public class GameSetting {
             }
         }
         entityList.addAll(projectile);
-        //setup order to draw
         entityList.sort(Comparator.comparingInt(o -> o.y));
-        for (SuperObject entity: event){
-            if(entity.name.equals("HealingPool")){
-                entityList.addFirst(entity);
-            }
-        }
+        entityList.addFirst(event.get(1));
         return entityList;
     }
 
