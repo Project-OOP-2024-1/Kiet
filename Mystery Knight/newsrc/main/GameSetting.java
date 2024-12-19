@@ -85,7 +85,7 @@ public class GameSetting {
         entityList.sort(Comparator.comparingInt(o -> o.y));
         for (SuperObject entity: event){
             if(entity.name.equals("HealingPool")){
-                entityList.addLast(entity);
+                entityList.addFirst(entity);
             }
         }
         return entityList;

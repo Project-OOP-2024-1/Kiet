@@ -3,6 +3,7 @@ package processors;
 import main.GamePanel;
 import main.GameSetting;
 import objects.*;
+import objects.Object;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -281,7 +282,7 @@ public class KeyHandler implements KeyListener {
         else gs.player.direction= "idle";
         counter++;
         if(counter>20){
-            if (isPressed(75) && !gs.player.projectile.alive){
+            if (isPressed(75) && !gs.player.projectile.alive && gs.player.inventory.contains(new Shield(gs,16,16))){
                 //set default
                 gs.player.projectile.set(gs.player.x,gs.player.y,gs.player.direction,true,true,8);
                 //add to list

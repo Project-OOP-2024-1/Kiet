@@ -98,7 +98,10 @@ public class CollisionChecker {
                     entity.collisionOn=true;
                     if (entity instanceof Projectile && !t.name.equals("GirlMagician")){
                         if (!t.invincible){
-                            t.life--;
+                            t.life-=entity.damage;
+                            if(entity.damage==4){
+                                gp.ui.addMessage("Critical!");
+                            }
                             t.invincible=true;
                         }
                     }
@@ -210,8 +213,12 @@ public class CollisionChecker {
         for (NPC npc : gs.npc){
             checkTile(npc);
             checkPlayer(npc);
-            Damaged(npc);
-            if(!npc.isMonster) checkDialog(npc);
+            if(npc.isMonster){
+                Damaged(npc);
+            }
+            else {
+                checkDialog(npc);
+            }
         }
         //collision for projectile
         for (Projectile projectile: gs.projectile){

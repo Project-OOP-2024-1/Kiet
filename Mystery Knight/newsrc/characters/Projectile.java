@@ -6,6 +6,7 @@ import processors.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 public class Projectile extends SolidEntity {
     public boolean isPlayer;
@@ -25,6 +26,7 @@ public class Projectile extends SolidEntity {
         if (name.equals("Slime")) frameCount=1;
         solidArea=new Rectangle(width*scale/4,height*scale/4,width*scale/2,height*scale/2);
         this.alive=false;
+        damage=5;
         getImage(name+"Ball",width,height);
     }
     public void set(int x, int y, String direction,boolean alive, boolean isPlayer,int speed){
@@ -39,6 +41,7 @@ public class Projectile extends SolidEntity {
 
     @Override
     public void update() {
+        damage= new Random().nextInt(1,5);
         if (!collisionOn) {
             if (direction.equals("up")) y -= speed;
             if (direction.equals("down") || direction.equals(("idle"))) y += speed;

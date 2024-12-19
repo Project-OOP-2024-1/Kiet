@@ -341,7 +341,7 @@ public class NPC extends SolidEntity implements DeathAnimation {
         // setAction  for every distance
         if (distance < gs.tileSize * 24) {
             //locate Player in 4 direction
-            if (!projectile.alive){
+            if (!projectile.alive && choice==0){
                 //set default
                 projectile.set(x,y,direction,true,false,4);
                 //add to list
@@ -410,6 +410,7 @@ public class NPC extends SolidEntity implements DeathAnimation {
                 attack=false;
             }
             if(distanceX< gs.tileSize*scale){
+                choice=ran.nextInt(6);
                 if(choice==0){
                     if(gs.player.life>0 && !gs.player.invincible){
                         gs.player.invincible=true;

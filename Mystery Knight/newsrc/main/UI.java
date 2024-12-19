@@ -1,10 +1,8 @@
 package main;
 
 import characters.NPC;
-import objects.Fragment;
-import objects.Potion;
-import objects.Mushroom;
-import objects.SuperObject;
+import objects.*;
+import objects.Object;
 
 import java.awt.*;
 import java.io.IOException;
@@ -283,13 +281,13 @@ public class UI {
     private void setContent() {
         if (scenarioState==0){
             switch (messageCounter){
-                case 1: currentDialogue="Girl Magician:\nGood morning Young Knight!";break;
-                case 2: currentDialogue="Knight:\nYeah,Good morning!";break;
+                case 1: currentDialogue="Girl Magician:\nWelcome to our world!";break;
+                case 2: currentDialogue="Knight:\nWhere is it?\nWho are you?";break;
                 case 3: currentDialogue="Knight:\nWhat is happening?\nWhere are everybody?";break;
-                case 4: currentDialogue="Girl Magician:\nSome of they have luckily escaped, others \nare killed by that monster.....";break;
-                case 5: currentDialogue="Knight:\nHuh...";break;
-                case 6: currentDialogue="Knight:\nThey are killed.....";break;
-                case 7: currentDialogue="Knight:\nWhere....where..is..that monster???";break;
+                case 4: currentDialogue="Girl Magician:\nThis is MystWorld!\nI'm a magician!";break;
+                case 5: currentDialogue="Girl Magician:\nEverybody escaped because of monster!";break;
+                case 6: currentDialogue="Girl Magician:\nAnd now Nobody lived here";break;
+                case 7: currentDialogue="Knight:\nWhere....where..is..the monster???";break;
                 case 8: currentDialogue="Knight:\nGru....h.h!";break;
                 case 9: currentDialogue="Girl Magician:\nYour power now is not sufficient.You may\n be killed";break;
                 case 10:currentDialogue="Girl Magician:\nHold on!";break;
@@ -300,7 +298,11 @@ public class UI {
                 case 15:currentDialogue="Girl Magician:\nYou move to South and you will see \nslimes and shits";break;
                 case 16:currentDialogue="Girl Magician:\nKill them and give me the reward!";break;
                 case 17:currentDialogue="                     Mission unlock!\nGather 3 slime hear and 2 stone";break;
-                case 18:messageCounter=1;scenarioState=1;gp.gameState=gp.playState;pushItems("Slime core");pushItems("Shit core");break;
+                case 18:
+                    gs.player.inventory.add(new Sword(gs,16,16));
+                    addMessage("Receive sword!");
+                    messageCounter=19;
+                case 19:messageCounter=1;scenarioState=1;gp.gameState=gp.playState;pushItems("Slime core");pushItems("Shit core");break;
             }
         }
         if(scenarioState==1){
@@ -327,6 +329,7 @@ public class UI {
                     addMessage("Congratulate!");
                     addMessage("You are learning new skill!");//Adding something here
                     addMessage("Throw Stone!");
+                    gs.player.inventory.add(new Shield(gs,16,16));
                     messageCounter=1;
                     scenarioState=3;
                     gp.gameState=gp.playState;
